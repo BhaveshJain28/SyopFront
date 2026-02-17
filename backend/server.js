@@ -3,6 +3,7 @@ import dotenv from "dotenv"
 import connectDB from "./confing/db.js"
 dotenv.config()
 import cors from "cors"
+import cookieParser from "cookie-parser"
 import userRoute from "./routes/user.route.js";
 import contactFormRouter from "./routes/contactForm.route.js";
 import geminiRoute from "./routes/gemini.route.js";
@@ -11,6 +12,7 @@ import feedbackRoute from "./routes/feedback.router.js"
 const app = express()
 app.use(express.json())
 app.use(cors())
+app.use(cookieParser())
 const port = process.env.PORT || 3005
 // DataBase Connection 
 connectDB();
