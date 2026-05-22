@@ -10,7 +10,9 @@ import journalRoute from "./routes/journal.route.js"
 import feedbackRoute from "./routes/feedback.router.js"
 const app = express()
 app.use(express.json())
-app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:5173'
+}));
 const port = process.env.PORT || 3005
 // DataBase Connection 
 connectDB();

@@ -1,9 +1,8 @@
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Card, Button, Badge, ProgressBar } from "react-bootstrap";
 import { UseAuth } from "../contexts/AuthContext";
 import axios from "axios";
 import { useEffect, useState } from "react";
-
+import { Calendar, ClipboardList, Brain, TrendingUp, Plus, BarChart3, FileText, Clock, Target, ArrowRight } from "lucide-react";
 
 export default function Dashboard() {
   const { user, token, backendUrl, isLogin } = UseAuth();
@@ -11,15 +10,18 @@ export default function Dashboard() {
   const [daysAccount, setDaysAccount] = useState(0);
   const [recentActivities, setRecentActivities] = useState([]);
   const [recentActivitiesCount, setRecentActivitiesCount] = useState(0);
-  const [loding, setLoding] = useState(true);
+  const [loading, setLoading] = useState(true);
+
   // it is a function that give us the data of how long ago a user's account was created
   const getDaysAgo = (createdAt) => {
+    if (!createdAt) return 0;
     const createdDate = new Date(createdAt);
     const now = new Date();
     const diffTime = now - createdDate;
     const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
   };
+
   const handleUserData = async () => {
     try {
       const res = await axios.get(`${backendUrl}/api/user/profile`, {
@@ -31,7 +33,8 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Error fetching user data:", error.message);
     }
-  }
+  };
+
   const handleUserJournal = async () => {
     try {
       const res = await axios.get(`${backendUrl}/api/journal/recent-activity`, {
@@ -44,19 +47,48 @@ export default function Dashboard() {
     } catch (error) {
       console.error("Error fetching user journal:", error.message);
     } finally {
-      setLoding(false) // set loding to false after feting data from backend
+      setLoading(false); // set loading to false after fetching data from backend
     }
   };
+
   useEffect(() => {
-    handleUserData();
-    handleUserJournal();
-  }, []);
+    if (isLogin && token) {
+      handleUserData();
+      handleUserJournal();
+    } else {
+      setLoading(false);
+    }
+  }, [isLogin, token]);
 
   const stats = [
-    { number: `${daysAccount}`, label: "Days Tracked", icon: "fas fa-calendar", color: "primary" },
-    { number: `${recentActivitiesCount}`, label: "Symptoms Logged", icon: "fas fa-notes-medical", color: "success" },
-    { number: "8", label: "AI Insights", icon: "fas fa-brain", color: "info" },
-    { number: "92-95%", label: "Accuracy", icon: "fas fa-chart-line", color: "warning" }
+    {
+      number: `${daysAccount}`,
+      label: "Days Tracked",
+      icon: Calendar,
+      gradient: "from-sky-500/20 to-blue-500/20 text-sky-500",
+      bgGradient: "from-sky-500 to-blue-600"
+    },
+    {
+      number: `${recentActivitiesCount}`,
+      label: "Symptoms Logged",
+      icon: ClipboardList,
+      gradient: "from-emerald-500/20 to-teal-500/20 text-emerald-500",
+      bgGradient: "from-emerald-500 to-teal-600"
+    },
+    {
+      number: "8",
+      label: "AI Insights",
+      icon: Brain,
+      gradient: "from-purple-500/20 to-indigo-500/20 text-purple-500",
+      bgGradient: "from-purple-500 to-indigo-600"
+    },
+    {
+      number: "92-95%",
+      label: "Accuracy",
+      icon: TrendingUp,
+      gradient: "from-amber-500/20 to-orange-500/20 text-amber-500",
+      bgGradient: "from-amber-500 to-orange-600"
+    }
   ];
 
   const recentActivity = [
@@ -65,35 +97,29 @@ export default function Dashboard() {
       title: "Logged fatigue level: 7/10",
       time: "Today, 2:30 PM",
       badge: "High",
-      badgeColor: "warning"
+      color: "border-amber-500/30 bg-amber-50 dark:bg-amber-950/20 text-amber-600 dark:text-amber-400",
+      dot: "bg-amber-500"
     },
     {
       type: "insight",
       title: "AI detected sleep quality improvement",
       time: "Yesterday, 9:15 AM",
       badge: "Insight",
-      badgeColor: "info"
+      color: "border-sky-500/30 bg-sky-50 dark:bg-sky-950/20 text-sky-600 dark:text-sky-400",
+      dot: "bg-sky-500"
     },
     {
       type: "medication",
       title: "Medication reminder: Methotrexate taken",
       time: "2 days ago, 8:00 AM",
       badge: "Completed",
-      badgeColor: "success"
+      color: "border-emerald-500/30 bg-emerald-50 dark:bg-emerald-950/20 text-emerald-600 dark:text-emerald-400",
+      dot: "bg-emerald-500"
     }
   ];
-  const todaysGoals = [
-    { task: "Symptom Check-in", progress: 66, current: "2/3", status: "In Progress" },
-    { task: "Water Intake", progress: 75, current: "6/8 glasses", status: "Good" },
-    { task: "Medication", progress: 100, current: "Complete", status: "Done" }
-  ];
-
-
-
-  // Add this function to your Dashboard component, right after your existing functions
 
   const handleGenerateReport = () => {
-    navigate("/GeneratePDF")
+    navigate("/GeneratePDF");
     const reportWindow = window.open('', '_blank', 'width=1200,height=800,scrollbars=yes,resizable=yes');
 
     const reportHTML = `
@@ -102,7 +128,7 @@ export default function Dashboard() {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Health Report - ${user.FirstName}</title>
+    <title>Health Report - ${user?.FirstName || 'Patient'}</title>
     <style>
         * {
             margin: 0;
@@ -330,7 +356,7 @@ export default function Dashboard() {
       day: 'numeric'
     })}</p>
                     <p style="font-size: 1.1rem; margin: 5px 0 0 0; opacity: 0.8;">
-                        Patient: ${user.FirstName}
+                        Patient: ${user?.FirstName || 'Patient'}
                     </p>
                 </div>
                 <div>
@@ -350,7 +376,7 @@ export default function Dashboard() {
                 </div>
                 <div class="stat-card">
                     <div class="stat-icon">📋</div>
-                    <h3 class="stat-number">12</h3>
+                    <h3 class="stat-number">${recentActivitiesCount}</h3>
                     <p class="stat-label">Symptoms Logged</p>
                 </div>
                 <div class="stat-card">
@@ -464,13 +490,13 @@ Generated on: ${new Date().toLocaleDateString('en-US', {
       month: 'long',
       day: 'numeric'
     })}
-Patient: ${user.FirstName}
+Patient: ${user?.FirstName || 'Patient'}
 
 === SUMMARY STATISTICS ===
-Days Tracked: 47 (+3 this week)
-Symptoms Logged: 23 (This week)
-AI Insights: 8 (2 new)
-Improvement: 15% (This month)
+Days Tracked: ${daysAccount}
+Symptoms Logged: ${recentActivitiesCount}
+AI Insights: 8
+Improvement: 15%
 
 === RECENT ACTIVITY LOG ===
 1. Logged fatigue level: 7/10
@@ -517,8 +543,8 @@ Improvement: 15% (This month)
 This report contains a comprehensive overview of your health tracking data.
 For detailed analysis and recommendations, please consult with your healthcare provider.
 
-Generated by Health Tracker App
-Report ID: ${Date.now()}\`;
+Generated by SymptoScope App
+Report ID: \${Date.now()}\`;
 
             const blob = new Blob([reportContent], { type: 'text/plain' });
             const url = window.URL.createObjectURL(blob);
@@ -544,182 +570,194 @@ Report ID: ${Date.now()}\`;
     reportWindow.document.close();
   };
 
-  if(!isLogin) {
-    return <div style={{ paddingTop: '100px', minHeight: '100vh' }}>Please log in to view your dashboard.</div>
+  if (!isLogin) {
+    return (
+      <div className="pt-28 min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 flex items-center justify-center transition-colors duration-300">
+        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 shadow-xl max-w-sm text-center space-y-4">
+          <div className="bg-red-500/10 text-red-500 rounded-full p-4 inline-flex">
+            <TrendingUp className="rotate-90" size={32} />
+          </div>
+          <h3 className="text-xl font-bold text-slate-800 dark:text-slate-100">Access Denied</h3>
+          <p className="text-sm">Please log in to your SymptomAI account to view your medical logs dashboard.</p>
+          <Link to="/login" className="inline-flex w-full justify-center bg-gradient-primary text-white py-3 rounded-2xl font-bold transition-transform hover:-translate-y-0.5 shadow-md shadow-medical-blue/20">
+            Sign In
+          </Link>
+        </div>
+      </div>
+    );
   }
+
   return user ? (
-    <>
-      <div style={{ paddingTop: '100px', minHeight: '100vh' }}>
-        <Container>
-          <Row className="mb-4">
-            <Col>
-              <div className="d-flex justify-content-between align-items-center">
-                <div>
-                  <h1 className="display-4 fw-bold text-gradient-primary mb-2">
-                    Welcome back, {user.FirstName}
-                  </h1>
-                  <p className="text-muted fs-5">
-                    Your health overview for {new Date().toLocaleDateString('en-US', {
-                      weekday: 'long',
-                      year: 'numeric',
-                      month: 'long',
-                      day: 'numeric'
-                    })}
+    <div className="pt-24 pb-16 min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+      <div className="container mx-auto px-4 lg:px-8">
+        
+        {/* Welcome Section */}
+        <div className="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-8">
+          <div className="space-y-1">
+            <h1 className="text-3xl md:text-4xl font-black text-gradient-primary tracking-tight">
+              Welcome back, {user.FirstName}
+            </h1>
+            <p className="text-slate-500 dark:text-slate-400 text-sm md:text-base font-semibold">
+              Your health overview for{" "}
+              <span className="text-slate-800 dark:text-slate-200">
+                {new Date().toLocaleDateString('en-US', {
+                  weekday: 'long',
+                  year: 'numeric',
+                  month: 'long',
+                  day: 'numeric'
+                })}
+              </span>
+            </p>
+          </div>
+          <Link to="/journal" className="inline-flex">
+            <button className="bg-gradient-primary text-white px-5 py-3 rounded-2xl font-bold hover:shadow-lg hover:shadow-medical-blue/20 hover:-translate-y-0.5 transition-all duration-300 flex items-center gap-2 cursor-pointer text-sm shadow">
+              <Plus size={18} />
+              Quick Log
+            </button>
+          </Link>
+        </div>
+
+        {/* Stats Grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6 mb-8 md:mb-12">
+          {stats.map((stat, index) => {
+            const IconComponent = stat.icon;
+            return (
+              <div key={index} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 shadow-xl shadow-slate-100/50 dark:shadow-none hover:-translate-y-1 transition-all duration-300 flex flex-col items-center text-center relative overflow-hidden group">
+                <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-50 dark:to-slate-950/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                <div className={`p-3.5 rounded-2xl mb-4 ${stat.gradient} relative z-10`}>
+                  <IconComponent size={24} />
+                </div>
+                <div className="space-y-1 relative z-10">
+                  {stat.number !== null && stat.number !== undefined ? (
+                    <h3 className="text-2xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
+                      {stat.number}
+                    </h3>
+                  ) : (
+                    <div className="w-5 h-5 border-2 border-medical-blue border-t-transparent rounded-full animate-spin mx-auto my-1"></div>
+                  )}
+                  <p className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">
+                    {stat.label}
                   </p>
                 </div>
-                <div className="d-flex gap-2">
-                  <Link to="/journal" className="text-decoration-none">
-                    <Button className="btn-medical-primary">
-                      <i className="fas fa-plus me-2"></i>
-                      Quick Log
-                    </Button>
-                  </Link>
-
-                </div>
               </div>
-            </Col>
-          </Row>
+            );
+          })}
+        </div>
 
-          {/* Stats Cards */}
-          <Row className="g-4 mb-5">
-            {stats.map((stat, index) => (
-              <Col md={6} lg={3} key={index}>
-                <Card className="medical-card h-100 text-center">
-                  <Card.Body className="p-4 flex flex-col">
-                    <div className={`bg-${stat.color} rounded-3 d-inline-flex p-3 mb-3`}>
-                      <i className={`${stat.icon} text-white`} style={{ fontSize: '1.5rem' }}></i>
-                    </div>
-                    {stat.number ? (
-                      <h3 className="fw-bold">{stat.number}</h3>
-                    ) : ( <>
-                    <br />
-                    <div className="spinner-border spinner-border-sm me-2" role="status"></div>
-                    </>
-                    )}
-                    <p className="text-muted mb-1">{stat.label}</p>
-                    <small className="text-success">{stat.change}</small>
-                  </Card.Body>
-                </Card>
-              </Col>
-            ))}
-          </Row>
-
-          {/* Quick Actions - Full Width */}
-          <div className="row mb-5">
-            <div className="col-12" >
-              <div className="card medical-card"  >
-                <div className="card-header">
-                  <h4 className="mb-0">
-                    <i className="fas fa-bolt text-warning me-2"></i>
-                    Quick Actions
-                  </h4>
+        {/* Quick Actions Panel */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/50 dark:shadow-none mb-8 md:mb-12">
+          <div className="flex items-center gap-2.5 mb-6 border-b border-slate-100 dark:border-slate-800/80 pb-4">
+            <span className="h-2 w-2 rounded-full bg-amber-500 animate-pulse"></span>
+            <h4 className="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide">
+              Quick Actions
+            </h4>
+          </div>
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <Link to="/journal" className="group">
+              <button className="w-full h-full bg-slate-50 hover:bg-gradient-primary border border-slate-100 dark:border-slate-800 dark:bg-slate-950/40 hover:border-transparent dark:hover:bg-gradient-primary rounded-2xl p-5 text-slate-800 dark:text-slate-200 hover:text-white dark:hover:text-white transition-all duration-300 flex flex-col items-center text-center gap-3 cursor-pointer group-hover:shadow-md">
+                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl group-hover:scale-110 transition-transform shadow-sm text-medical-blue">
+                  <Plus size={22} />
                 </div>
-                <div className="card-body" >
-                  <div className="row g-3" style={{ display: "flex", alignItems: "center", justifyContent: "space-evenly" }}>
-                    <div className="col-md-6 col-lg-3">
-                      <Link to="/journal" className="text-decoration-none">
-                        <div className="d-grid">
-                          <button className="btn btn-medical-primary py-3">
-                            <i className="fas fa-plus d-block mb-2" style={{ fontSize: '1.5rem' }}></i>
-                            Log Symptoms
-                          </button>
-                        </div>
-                      </Link>
-                    </div>
-                    {/* <div className="col-md-6 col-lg-3">
-                    <div className="d-grid">
-                      <button className="btn btn-outline-primary py-3">
-                        <i className="fas fa-microphone d-block mb-2" style={{ fontSize: '1.5rem' }}></i>
-                        Voice Log
-                      </button>
-                    </div>
-                  </div> */}
-                    <div className="col-md-6 col-lg-3">
-                      <Link to="/analysis" className="text-decoration-none">
-                        <div className="d-grid">
-                          <button className="btn btn-outline-primary py-3">
-                            <i className="fas fa-chart-bar d-block mb-2" style={{ fontSize: '1.5rem' }}></i>
-                            View Analysis
-                          </button>
-                        </div>
-                      </Link>
-                    </div>
-                    <div className="col-md-6 col-lg-3">
-                      <div className="d-grid">
-                        <button
-                          className="btn btn-outline-primary py-3"
-                          onClick={handleGenerateReport}
-                        >
-                          <i className="fas fa-file-pdf d-block mb-2" style={{ fontSize: '1.5rem' }}></i>
-                          Generate Report
-                        </button>
-                      </div>
+                <div>
+                  <span className="font-extrabold text-sm block">Log Symptoms</span>
+                  <span className="text-xs opacity-75 dark:opacity-60 block mt-0.5">Report metrics and run AI insights</span>
+                </div>
+              </button>
+            </Link>
+
+            <Link to="/analysis" className="group">
+              <button className="w-full h-full bg-slate-50 hover:bg-gradient-primary border border-slate-100 dark:border-slate-800 dark:bg-slate-950/40 hover:border-transparent dark:hover:bg-gradient-primary rounded-2xl p-5 text-slate-800 dark:text-slate-200 hover:text-white dark:hover:text-white transition-all duration-300 flex flex-col items-center text-center gap-3 cursor-pointer group-hover:shadow-md">
+                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl group-hover:scale-110 transition-transform shadow-sm text-sky-500">
+                  <BarChart3 size={22} />
+                </div>
+                <div>
+                  <span className="font-extrabold text-sm block">View Analysis</span>
+                  <span className="text-xs opacity-75 dark:opacity-60 block mt-0.5">Explore timelines and disease graphs</span>
+                </div>
+              </button>
+            </Link>
+
+            <div className="group cursor-pointer" onClick={handleGenerateReport}>
+              <button className="w-full h-full bg-slate-50 hover:bg-gradient-primary border border-slate-100 dark:border-slate-800 dark:bg-slate-950/40 hover:border-transparent dark:hover:bg-gradient-primary rounded-2xl p-5 text-slate-800 dark:text-slate-200 hover:text-white dark:hover:text-white transition-all duration-300 flex flex-col items-center text-center gap-3 cursor-pointer group-hover:shadow-md">
+                <div className="p-3 bg-white dark:bg-slate-900 rounded-xl group-hover:scale-110 transition-transform shadow-sm text-purple-500">
+                  <FileText size={22} />
+                </div>
+                <div>
+                  <span className="font-extrabold text-sm block">Generate Report</span>
+                  <span className="text-xs opacity-75 dark:opacity-60 block mt-0.5">Export custom records to a PDF doc</span>
+                </div>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Main Content Area */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 md:gap-8">
+          {/* Recent Activity Log */}
+          <div className="lg:col-span-8 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/50 dark:shadow-none">
+            <div className="flex items-center gap-2.5 mb-6 border-b border-slate-100 dark:border-slate-800/80 pb-4">
+              <Clock className="text-sky-500" size={20} />
+              <h4 className="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide">
+                Recent Activity Log
+              </h4>
+            </div>
+            <div className="space-y-4">
+              {recentActivity.map((activity, index) => (
+                <div key={index} className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 p-4 border border-slate-100 dark:border-slate-800/60 dark:bg-slate-950/20 rounded-2xl hover:bg-slate-50/50 dark:hover:bg-slate-950/40 transition-colors">
+                  <div className="flex items-start gap-3">
+                    <span className={`h-2.5 w-2.5 rounded-full ${activity.dot} mt-1.5 flex-shrink-0`}></span>
+                    <div>
+                      <p className="font-extrabold text-sm text-slate-700 dark:text-slate-200">
+                        {activity.title}
+                      </p>
+                      <span className="text-xs text-slate-400 font-medium inline-flex items-center gap-1 mt-1">
+                        <Clock size={12} />
+                        {activity.time}
+                      </span>
                     </div>
                   </div>
+                  <div>
+                    <span className={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold border ${activity.color}`}>
+                      {activity.badge}
+                    </span>
+                  </div>
                 </div>
-              </div>
+              ))}
             </div>
           </div>
 
-          {/* Main Content Area with Recent Activity and Today's Goals side by side */}
-          <div className="row">
-            <div className="col-lg-8">
-              <div className="card medical-card">
-                <div className="card-header">
-                  <h4 className="mb-0">
-                    <i className="fas fa-clock text-info me-2"></i>
-                    Recent Activity
-                  </h4>
-                </div>
-                <div className="card-body">
-                  {recentActivity.map((activity, index) => (
-                    <div key={index} className="d-flex align-items-center p-3 rounded glassmorphism mb-3">
-                      <div className="me-3">
-                        <i className={`fas fa-circle text-${activity.badgeColor}`}></i>
-                      </div>
-                      <div className="flex-grow-1">
-                        <div className="d-flex justify-content-between align-items-start">
-                          <div>
-                            <p className="mb-1 fw-medium">{activity.title}</p>
-                            <small className="text-muted">
-                              <i className="fas fa-clock me-1"></i>
-                              {activity.time}
-                            </small>
-                          </div>
-                          <span className={`badge bg-${activity.badgeColor}`}>{activity.badge}</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-                </div>
-              </div>
+          {/* Today's Goals */}
+          <div className="lg:col-span-4 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/50 dark:shadow-none">
+            <div className="flex items-center gap-2.5 mb-6 border-b border-slate-100 dark:border-slate-800/80 pb-4">
+              <Target className="text-emerald-500" size={20} />
+              <h4 className="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide">
+                Today's Goals
+              </h4>
             </div>
-
-            <div className="col-lg-4">
-              <div className="card medical-card">
-                <div className="card-header">
-                  <h5 className="mb-0">
-                    <i className="fas fa-target text-success me-2"></i>
-                    Today's Goals
-                  </h5>
-                </div>
-                <div className="card-body">
-                  <div className="text-center py-5">
-                    {/* <i className="fas fa-clock text-muted mb-3" style={{ fontSize: '3rem' }}></i> */}
-                    <p className="text-muted fs-3 mb-0" style={{ fontStyle: 'italic' }}>
-                      Coming Soon...
-                    </p>
-                  </div>
-                </div>
+            <div className="flex flex-col items-center justify-center py-10 text-center space-y-4">
+              <div className="h-16 w-16 bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/60 rounded-full flex items-center justify-center text-slate-400 dark:text-slate-600 animate-pulse">
+                <Target size={28} />
+              </div>
+              <div className="space-y-1">
+                <p className="text-sm font-extrabold text-slate-600 dark:text-slate-300">
+                  Coming Soon...
+                </p>
+                <p className="text-xs text-slate-400 max-w-[200px] mx-auto leading-relaxed">
+                  We are developing interactive checklists to support your daily wellness logs.
+                </p>
               </div>
             </div>
           </div>
-        </Container>
+        </div>
+
       </div>
-    </>
+    </div>
   ) : (
-    <>
-      <p style={{ paddingTop: '100px', backgroundColor: '#f8f9fa', minHeight: '100vh' }}>Fething data</p>;
-    </>
+    <div className="pt-28 min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-600 dark:text-slate-400 flex items-center justify-center transition-colors duration-300">
+      <div className="flex flex-col items-center gap-3">
+        <div className="w-8 h-8 border-4 border-medical-blue border-t-transparent rounded-full animate-spin"></div>
+        <p className="text-sm font-bold tracking-wide">Fetching health data...</p>
+      </div>
+    </div>
   );
 }

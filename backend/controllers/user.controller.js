@@ -2,8 +2,8 @@ import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 
-// Generate a short-lived access token
-const generateAccessToken = (id) => jwt.sign({ id }, process.env.JWT_ACCESS_SECRET, { expiresIn: '15m' });
+// Generate a long-lived access token for persistent user sessions
+const generateAccessToken = (id) => jwt.sign({ id }, process.env.JWT_ACCESS_SECRET, { expiresIn: '7d' });
 // Generate a long-lived refresh token
 const generateRefreshToken = (id) => jwt.sign({ id }, process.env.JWT_REFRESH_SECRET, { expiresIn: '7d' });
 
@@ -99,7 +99,7 @@ export const loginUser = async (req, res) => {
 // Ye naya function hai jo expired access token ko refresh karega
 
 export const refreshTokenHandle = async (req, res) => {
-    const refreshToken = req.cookie.refreshToken;
+    const refreshToken = req.cookies?.refreshToken;
     if (!refreshToken) {
         return res.status(401).json({ message: 'No refresh token, authorization denied' });
     }
@@ -112,7 +112,7 @@ export const refreshTokenHandle = async (req, res) => {
         });
     } catch (error) {
         res.clearCookie('refreshToken');
-        res.status(403).json({ message: 'Refresh token is invalid or expired', error: err });
+        res.status(403).json({ message: 'Refresh token is invalid or expired', error: error.message });
     }
 }
 

@@ -1,19 +1,52 @@
-////before runing it pls run command npm install lucide-react
-
-import React, { useState } from 'react';
-import { User, Edit3, Shield, Phone, Mail, Camera, Save, Eye, EyeOff } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { User, Edit3, Shield, Phone, Mail, Camera, Save, Eye, EyeOff, CheckCircle2, Lock, Sparkles, Heart } from 'lucide-react';
+import { UseAuth } from '../contexts/AuthContext';
 
 export default function Profile() {
+  const { user } = UseAuth();
   const [activeTab, setActiveTab] = useState('personal');
   const [isEditing, setIsEditing] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [showSuccessToast, setShowSuccessToast] = useState(false);
+  
+  // Custom Profile state initialized with real user context or localStorage overrides
   const [profileData, setProfileData] = useState({
     firstName: 'John',
     lastName: 'Doe',
     email: 'john.doe@email.com',
     phone: '+1 (555) 123-4567',
-    age: '38'
+    age: '38',
+    avatar: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256'
   });
+
+  // Settings states
+  const [shareData, setShareData] = useState(false);
+  const [thirdPartyIntegrations, setThirdPartyIntegrations] = useState(true);
+
+  // Sync state from authenticated user and localStorage overrides
+  useEffect(() => {
+    const cachedData = localStorage.getItem('symptoscope_profile_addons');
+    let parsedCache = {};
+    if (cachedData) {
+      try {
+        parsedCache = JSON.parse(cachedData);
+      } catch (e) {
+        console.error("Failed to parse profile cache:", e);
+      }
+    }
+
+    setProfileData({
+      firstName: user?.FirstName || parsedCache.firstName || 'John',
+      lastName: user?.LastName || parsedCache.lastName || 'Doe',
+      email: user?.email || parsedCache.email || 'john.doe@email.com',
+      phone: parsedCache.phone || '+1 (555) 123-4567',
+      age: parsedCache.age || '38',
+      avatar: parsedCache.avatar || 'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256'
+    });
+
+    if (parsedCache.shareData !== undefined) setShareData(parsedCache.shareData);
+    if (parsedCache.thirdPartyIntegrations !== undefined) setThirdPartyIntegrations(parsedCache.thirdPartyIntegrations);
+  }, [user]);
 
   const handleInputChange = (field, value) => {
     setProfileData(prev => ({
@@ -22,355 +55,260 @@ export default function Profile() {
     }));
   };
 
-  const containerStyle = {
-    background: 'linear-gradient(135deg, #f0f9ff 0%, #ffffff 100%)',
-    minHeight: '100vh',
-    paddingTop: '100px'
+  const handleSave = () => {
+    // Save to localStorage for demo persistence
+    localStorage.setItem('symptoscope_profile_addons', JSON.stringify({
+      ...profileData,
+      shareData,
+      thirdPartyIntegrations
+    }));
+    
+    setIsEditing(false);
+    setShowSuccessToast(true);
+    setTimeout(() => {
+      setShowSuccessToast(false);
+    }, 4000);
   };
 
-  const wrapperStyle = {
-    maxWidth: '1200px',
-    margin: '0 auto',
-    padding: '0 20px'
-  };
-
-  const headerCardStyle = {
-    background: 'linear-gradient(135deg, #0ea5e9 0%, #0284c7 100%)',
-    borderRadius: '20px',
-    marginBottom: '32px',
-    overflow: 'hidden',
-    boxShadow: '0 20px 40px rgba(14, 165, 233, 0.3)'
-  };
-
-  const headerContentStyle = {
-    padding: '48px 32px',
-    color: 'white',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    flexWrap: 'wrap',
-    gap: '24px'
-  };
-
-  const profileSectionStyle = {
-    display: 'flex',
-    alignItems: 'center',
-    gap: '24px'
-  };
-
-  const avatarStyle = {
-    width: '100px',
-    height: '100px',
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    position: 'relative',
-    backdropFilter: 'blur(10px)'
-  };
-
-  const cameraButtonStyle = {
-    position: 'absolute',
-    bottom: '-8px',
-    right: '-8px',
-    width: '32px',
-    height: '32px',
-    backgroundColor: '#0ea5e9',
-    border: 'none',
-    borderRadius: '50%',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    cursor: 'pointer',
-    boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
-    transition: 'all 0.3s ease'
-  };
-
-  const editButtonStyle = {
-    backgroundColor: 'rgba(255,255,255,0.2)',
-    border: 'none',
-    borderRadius: '12px',
-    padding: '12px 24px',
-    color: 'white',
-    backdropFilter: 'blur(10px)',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    fontSize: '16px',
-    fontWeight: '500',
-    transition: 'all 0.3s ease'
-  };
-
-  const mainCardStyle = {
-    backgroundColor: 'white',
-    borderRadius: '20px',
-    boxShadow: '0 20px 40px rgba(0,0,0,0.08)',
-    overflow: 'hidden'
-  };
-
-  const tabsContainerStyle = {
-    display: 'flex',
-    borderBottom: '1px solid #e5e7eb',
-    backgroundColor: '#f9fafb'
-  };
-
-  const tabStyle = {
-    flex: 1,
-    padding: '20px 24px',
-    border: 'none',
-    backgroundColor: 'transparent',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '8px',
-    fontSize: '16px',
-    fontWeight: '500',
-    color: '#6b7280',
-    transition: 'all 0.3s ease',
-    borderBottom: '3px solid transparent'
-  };
-
-  const activeTabStyle = {
-    ...tabStyle,
-    color: '#0ea5e9',
-    backgroundColor: 'white',
-    borderBottomColor: '#0ea5e9'
-  };
-
-  const contentStyle = {
-    padding: '48px 32px'
-  };
-
-  const sectionTitleStyle = {
-    fontSize: '28px',
-    fontWeight: 'bold',
-    color: '#1f2937',
-    marginBottom: '32px'
-  };
-
-  const gridStyle = {
-    display: 'grid',
-    gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
-    gap: '24px',
-    marginBottom: '24px'
-  };
-
-  const formGroupStyle = {
-    marginBottom: '24px'
-  };
-
-  const labelStyle = {
-    display: 'block',
-    fontSize: '16px',
-    fontWeight: '600',
-    color: '#374151',
-    marginBottom: '8px'
-  };
-
-  const inputStyle = {
-    width: '100%',
-    padding: '14px 16px',
-    border: '2px solid #e5e7eb',
-    borderRadius: '12px',
-    fontSize: '16px',
-    transition: 'all 0.3s ease',
-    backgroundColor: 'white'
-  };
-
-  const inputWithIconStyle = {
-    ...inputStyle,
-    paddingLeft: '48px'
-  };
-
-  const iconContainerStyle = {
-    position: 'relative'
-  };
-
-  const iconStyle = {
-    position: 'absolute',
-    left: '16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    color: '#9ca3af',
-    zIndex: 2
-  };
-
-  const sectionCardStyle = {
-    backgroundColor: '#f8fafc',
-    padding: '32px',
-    borderRadius: '16px',
-    marginBottom: '24px',
-    border: '1px solid #e2e8f0'
-  };
-
-  const saveButtonStyle = {
-    backgroundColor: '#0ea5e9',
-    color: 'white',
-    border: 'none',
-    borderRadius: '12px',
-    padding: '16px 32px',
-    fontSize: '16px',
-    fontWeight: '600',
-    cursor: 'pointer',
-    display: 'flex',
-    alignItems: 'center',
-    gap: '8px',
-    transition: 'all 0.3s ease',
-    boxShadow: '0 4px 12px rgba(14, 165, 233, 0.3)'
-  };
-
-  const passwordInputContainerStyle = {
-    position: 'relative'
-  };
-
-  const passwordToggleStyle = {
-    position: 'absolute',
-    right: '16px',
-    top: '50%',
-    transform: 'translateY(-50%)',
-    background: 'none',
-    border: 'none',
-    color: '#9ca3af',
-    cursor: 'pointer',
-    padding: '4px'
-  };
-
-  const comingSoonStyle = {
-    textAlign: 'center',
-    padding: '60px 20px',
-    color: '#6b7280',
-    fontSize: '18px',
-    fontStyle: 'italic'
+  const handleAvatarChange = () => {
+    // Generate a new cute Unsplash avatar for fun when clicked
+    const randomAvatars = [
+      'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&q=80&w=256',
+      'https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?auto=format&fit=crop&q=80&w=256',
+      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&q=80&w=256',
+      'https://images.unsplash.com/photo-1560250097-0b93528c311a?auto=format&fit=crop&q=80&w=256',
+      'https://images.unsplash.com/photo-1573496359142-b8d87734a5a2?auto=format&fit=crop&q=80&w=256'
+    ];
+    const nextAvatar = randomAvatars[Math.floor(Math.random() * randomAvatars.length)];
+    handleInputChange('avatar', nextAvatar);
+    
+    // Auto-save this right away
+    const cachedData = localStorage.getItem('symptoscope_profile_addons');
+    const parsedCache = cachedData ? JSON.parse(cachedData) : {};
+    localStorage.setItem('symptoscope_profile_addons', JSON.stringify({
+      ...parsedCache,
+      avatar: nextAvatar
+    }));
   };
 
   return (
-    <div style={containerStyle}>
-      <div style={wrapperStyle}>
-        {/* Header Section */}
-        <div style={headerCardStyle}>
-          <div style={headerContentStyle}>
-            <div style={profileSectionStyle}>
-              <div style={avatarStyle}>
-                <User size={48} color="white" />
-                <button style={cameraButtonStyle}>
-                  <Camera size={16} color="white" />
-                </button>
+    <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 pt-28 pb-16 transition-colors duration-300 relative overflow-hidden">
+      
+      {/* Decorative background gradients */}
+      <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-sky-200/30 dark:bg-sky-950/15 rounded-full blur-3xl -translate-x-1/2 -translate-y-1/2" />
+      <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-indigo-200/30 dark:bg-indigo-950/15 rounded-full blur-3xl translate-x-1/2 translate-y-1/2" />
+
+      {/* Success Toast */}
+      {showSuccessToast && (
+        <div className="fixed bottom-6 right-6 z-50 bg-emerald-500 text-white px-5 py-4 rounded-xl shadow-2xl flex items-center gap-3 animate-[slideIn_0.3s_ease-out] border border-emerald-400">
+          <CheckCircle2 className="w-5 h-5 text-white animate-bounce" />
+          <div>
+            <p className="font-bold">Profile Updated!</p>
+            <p className="text-xs text-emerald-100">Changes saved to your device dashboard.</p>
+          </div>
+        </div>
+      )}
+
+      <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
+        
+        {/* Header Profile Summary Card */}
+        <div className="bg-gradient-to-r from-sky-500 to-indigo-600 rounded-3xl p-8 sm:p-10 text-white shadow-xl shadow-sky-500/10 dark:shadow-indigo-950/30 mb-8 relative overflow-hidden group">
+          <div className="absolute top-0 right-0 p-8 opacity-10 transform translate-x-6 -translate-y-6 pointer-events-none group-hover:scale-110 transition-transform duration-500">
+            <Heart size={200} />
+          </div>
+          
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-6 relative z-10">
+            <div className="flex flex-col sm:flex-row items-center gap-6">
+              
+              {/* Profile Avatar with Hover Effect */}
+              <div className="relative group/avatar cursor-pointer" onClick={handleAvatarChange}>
+                <div className="w-24 h-24 rounded-full overflow-hidden border-4 border-white/30 hover:border-white shadow-xl transition-all duration-300 bg-white/10 backdrop-blur-md flex items-center justify-center">
+                  {profileData.avatar ? (
+                    <img 
+                      src={profileData.avatar} 
+                      alt="Profile Avatar" 
+                      className="w-full h-full object-cover"
+                    />
+                  ) : (
+                    <User size={48} className="text-white" />
+                  )}
+                </div>
+                <div className="absolute -bottom-1 -right-1 w-8 h-8 bg-sky-600 hover:bg-sky-700 text-white rounded-full flex items-center justify-center shadow-lg border border-white transition-colors duration-200">
+                  <Camera size={14} />
+                </div>
+                <div className="absolute inset-0 bg-black/40 rounded-full opacity-0 group-hover/avatar:opacity-100 flex items-center justify-center transition-opacity duration-300">
+                  <span className="text-[10px] text-white font-semibold">Change</span>
+                </div>
               </div>
-              <div>
-                <h1 style={{ fontSize: '32px', fontWeight: 'bold', margin: '0 0 8px 0' }}>
-                  {profileData.firstName} {profileData.lastName}
-                </h1>
-                <p style={{ fontSize: '18px', margin: '0 0 4px 0', opacity: 0.9 }}>
-                  {profileData.email}
+
+              {/* Patient Meta Details */}
+              <div className="text-center sm:text-left">
+                <div className="flex items-center justify-center sm:justify-start gap-2 flex-wrap">
+                  <h1 className="text-2xl sm:text-3xl font-black tracking-tight">
+                    {profileData.firstName} {profileData.lastName}
+                  </h1>
+                  <span className="px-2.5 py-0.5 rounded-full text-xs font-semibold bg-white/20 backdrop-blur-md flex items-center gap-1">
+                    <Sparkles className="w-3 h-3 text-yellow-300 fill-yellow-300 animate-spin-slow" /> Patient Profile
+                  </span>
+                </div>
+                <p className="text-sky-100 text-sm sm:text-base mt-1 flex items-center justify-center sm:justify-start gap-1">
+                  <Mail size={14} /> {profileData.email}
                 </p>
-                <p style={{ fontSize: '16px', margin: '0', opacity: 0.8 }}>
-                  Age: {profileData.age} years
+                <p className="text-sky-200 text-xs sm:text-sm mt-0.5">
+                  Age: <span className="font-semibold text-white">{profileData.age} years</span> • Status: <span className="font-semibold text-emerald-300">Active</span>
                 </p>
               </div>
             </div>
+
             <button
-              style={editButtonStyle}
-              onClick={() => setIsEditing(!isEditing)}
+              onClick={() => {
+                if (isEditing) {
+                  // Revert from cached
+                  const cachedData = localStorage.getItem('symptoscope_profile_addons');
+                  if (cachedData) {
+                    try {
+                      const parsed = JSON.parse(cachedData);
+                      setProfileData(prev => ({ ...prev, ...parsed }));
+                    } catch(e){}
+                  }
+                  setIsEditing(false);
+                } else {
+                  setIsEditing(true);
+                }
+              }}
+              className="px-5 py-2.5 rounded-xl bg-white/10 hover:bg-white/20 active:bg-white/30 border border-white/20 backdrop-blur-md text-white font-medium text-sm transition-all duration-200 flex items-center gap-2 hover:scale-[1.03] active:scale-[0.97]"
             >
-              <Edit3 size={20} />
-              {isEditing ? 'Cancel' : 'Edit Profile'}
+              <Edit3 size={16} />
+              {isEditing ? 'Cancel Edit' : 'Edit Profile'}
             </button>
           </div>
         </div>
 
-        {/* Main Content Card */}
-        <div style={mainCardStyle}>
-          {/* Navigation Tabs */}
-          <div style={tabsContainerStyle}>
+        {/* Profile Card and Form Details */}
+        <div className="bg-white dark:bg-slate-900 border border-slate-200/80 dark:border-slate-800/80 rounded-3xl overflow-hidden shadow-sm dark:shadow-none transition-colors duration-300">
+          
+          {/* Dashboard Tabs Bar */}
+          <div className="flex border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-900/50">
             <button
-              style={activeTab === 'personal' ? activeTabStyle : tabStyle}
               onClick={() => setActiveTab('personal')}
+              className={`flex-1 py-4 sm:py-5 px-4 font-semibold text-sm flex items-center justify-center gap-2 border-b-2 transition-all duration-300 ${
+                activeTab === 'personal'
+                  ? 'border-sky-500 text-sky-600 dark:text-sky-400 bg-white dark:bg-slate-900'
+                  : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100/50 dark:hover:bg-slate-800/50'
+              }`}
             >
-              <User size={20} />
+              <User size={18} />
               Personal Info
             </button>
             <button
-              style={activeTab === 'privacy' ? activeTabStyle : tabStyle}
               onClick={() => setActiveTab('privacy')}
+              className={`flex-1 py-4 sm:py-5 px-4 font-semibold text-sm flex items-center justify-center gap-2 border-b-2 transition-all duration-300 ${
+                activeTab === 'privacy'
+                  ? 'border-sky-500 text-sky-600 dark:text-sky-400 bg-white dark:bg-slate-900'
+                  : 'border-transparent text-slate-500 hover:text-slate-800 dark:hover:text-slate-200 hover:bg-slate-100/50 dark:hover:bg-slate-800/50'
+              }`}
             >
-              <Shield size={20} />
-              Privacy & Security (Coming Soon)
+              <Shield size={18} />
+              Privacy & Security
             </button>
           </div>
 
-          <div style={contentStyle}>
-            {/* Personal Information Tab */}
+          <div className="p-6 sm:p-10">
+            
+            {/* Tab: Personal Details */}
             {activeTab === 'personal' && (
-              <div>
-                <h3 style={sectionTitleStyle}>Personal Information</h3>
-                <div style={gridStyle}>
-                  <div style={formGroupStyle}>
-                    <label style={labelStyle}>First Name</label>
+              <div className="space-y-6">
+                <div className="flex items-center justify-between pb-4 border-b border-slate-100 dark:border-slate-800">
+                  <div>
+                    <h3 className="text-xl font-bold text-slate-800 dark:text-slate-200">Personal Information</h3>
+                    <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Manage your personal demographics and contact coordinates.</p>
+                  </div>
+                  {isEditing && (
+                    <span className="text-xs bg-amber-50 dark:bg-amber-950/30 text-amber-600 dark:text-amber-400 font-semibold px-3 py-1 rounded-full border border-amber-200/50 dark:border-amber-900/30 animate-pulse">
+                      Unsaved Changes
+                    </span>
+                  )}
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  
+                  {/* First Name Field */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">First Name</label>
                     <input
                       type="text"
                       value={profileData.firstName}
                       onChange={(e) => handleInputChange('firstName', e.target.value)}
                       disabled={!isEditing}
-                      style={{
-                        ...inputStyle,
-                        backgroundColor: !isEditing ? '#f9fafb' : 'white',
-                        color: !isEditing ? '#6b7280' : '#1f2937'
-                      }}
+                      placeholder="Enter first name"
+                      className={`w-full px-4 py-3 border rounded-xl text-sm font-medium transition-all duration-200 outline-none ${
+                        isEditing
+                          ? 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10'
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-500 cursor-not-allowed'
+                      }`}
                     />
                   </div>
-                  <div style={formGroupStyle}>
-                    <label style={labelStyle}>Last Name</label>
+
+                  {/* Last Name Field */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Last Name</label>
                     <input
                       type="text"
                       value={profileData.lastName}
                       onChange={(e) => handleInputChange('lastName', e.target.value)}
                       disabled={!isEditing}
-                      style={{
-                        ...inputStyle,
-                        backgroundColor: !isEditing ? '#f9fafb' : 'white',
-                        color: !isEditing ? '#6b7280' : '#1f2937'
-                      }}
+                      placeholder="Enter last name"
+                      className={`w-full px-4 py-3 border rounded-xl text-sm font-medium transition-all duration-200 outline-none ${
+                        isEditing
+                          ? 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10'
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-500 cursor-not-allowed'
+                      }`}
                     />
                   </div>
-                  <div style={formGroupStyle}>
-                    <label style={labelStyle}>Email Address</label>
-                    <div style={iconContainerStyle}>
-                      <Mail size={20} style={iconStyle} />
+
+                  {/* Email Address Field */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Email Address</label>
+                    <div className="relative">
+                      <Mail size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                       <input
                         type="email"
                         value={profileData.email}
                         onChange={(e) => handleInputChange('email', e.target.value)}
                         disabled={!isEditing}
-                        style={{
-                          ...inputWithIconStyle,
-                          backgroundColor: !isEditing ? '#f9fafb' : 'white',
-                          color: !isEditing ? '#6b7280' : '#1f2937'
-                        }}
+                        placeholder="Enter email address"
+                        className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm font-medium transition-all duration-200 outline-none ${
+                          isEditing
+                            ? 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10'
+                            : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-500 cursor-not-allowed'
+                        }`}
                       />
                     </div>
                   </div>
-                  <div style={formGroupStyle}>
-                    <label style={labelStyle}>Phone Number</label>
-                    <div style={iconContainerStyle}>
-                      <Phone size={20} style={iconStyle} />
+
+                  {/* Phone Number Field */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Phone Number</label>
+                    <div className="relative">
+                      <Phone size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400" />
                       <input
                         type="tel"
                         value={profileData.phone}
                         onChange={(e) => handleInputChange('phone', e.target.value)}
                         disabled={!isEditing}
-                        style={{
-                          ...inputWithIconStyle,
-                          backgroundColor: !isEditing ? '#f9fafb' : 'white',
-                          color: !isEditing ? '#6b7280' : '#1f2937'
-                        }}
+                        placeholder="Enter phone number"
+                        className={`w-full pl-11 pr-4 py-3 border rounded-xl text-sm font-medium transition-all duration-200 outline-none ${
+                          isEditing
+                            ? 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10'
+                            : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-500 cursor-not-allowed'
+                        }`}
                       />
                     </div>
                   </div>
-                  <div style={formGroupStyle}>
-                    <label style={labelStyle}>Age</label>
+
+                  {/* Age Field */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Age (years)</label>
                     <input
                       type="number"
                       value={profileData.age}
@@ -378,168 +316,194 @@ export default function Profile() {
                       disabled={!isEditing}
                       min="1"
                       max="120"
-                      style={{
-                        ...inputStyle,
-                        backgroundColor: !isEditing ? '#f9fafb' : 'white',
-                        color: !isEditing ? '#6b7280' : '#1f2937'
-                      }}
+                      placeholder="Enter age"
+                      className={`w-full px-4 py-3 border rounded-xl text-sm font-medium transition-all duration-200 outline-none ${
+                        isEditing
+                          ? 'border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10'
+                          : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-500 cursor-not-allowed'
+                      }`}
                     />
                   </div>
+
+                  {/* Blood Type Placeholder (Read-only aesthetic field) */}
+                  <div className="space-y-2">
+                    <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Blood Group</label>
+                    <input
+                      type="text"
+                      value="O Positive (O+)"
+                      disabled={true}
+                      className="w-full px-4 py-3 border border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900/50 text-slate-400 cursor-not-allowed rounded-xl text-sm font-medium transition-colors"
+                    />
+                  </div>
+
                 </div>
               </div>
             )}
 
-            {/* Privacy & Security Tab */}
+            {/* Tab: Privacy & Security */}
             {activeTab === 'privacy' && (
-              <div>
-                <h3 style={sectionTitleStyle}>Privacy & Security (Coming Soon)</h3>
+              <div className="space-y-8">
                 
-                <div style={sectionCardStyle}>
-                  <h4 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', marginBottom: '24px' }}>
-                    Change Password
-                  </h4>
-                  <div style={gridStyle}>
-                    <div style={formGroupStyle}>
-                      <label style={labelStyle}>Current Password</label>
-                      <div style={passwordInputContainerStyle}>
+                {/* Password Section */}
+                <div className="bg-slate-50/50 dark:bg-slate-900/20 border border-slate-100 dark:border-slate-800/60 p-6 sm:p-8 rounded-2xl">
+                  <div className="flex items-center gap-3 pb-5 border-b border-slate-100 dark:border-slate-800 mb-6">
+                    <div className="w-10 h-10 rounded-xl bg-sky-100 dark:bg-sky-950/50 text-sky-600 dark:text-sky-400 flex items-center justify-center">
+                      <Lock size={20} />
+                    </div>
+                    <div>
+                      <h4 className="text-lg font-bold text-slate-800 dark:text-slate-200">Change Account Password</h4>
+                      <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Ensure your account uses a secure password to protect health details.</p>
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    
+                    {/* Current Password */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Current Password</label>
+                      <div className="relative">
                         <input
                           type={showPassword ? "text" : "password"}
                           placeholder="Enter current password"
-                          style={{
-                            ...inputStyle,
-                            paddingRight: '48px'
-                          }}
+                          className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 rounded-xl text-sm outline-none transition-all duration-200"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPassword(!showPassword)}
-                          style={passwordToggleStyle}
+                          className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200"
                         >
-                          {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                          {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
                         </button>
                       </div>
                     </div>
-                    <div></div>
-                    <div style={formGroupStyle}>
-                      <label style={labelStyle}>New Password</label>
+
+                    <div className="hidden md:block"></div>
+
+                    {/* New Password */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">New Password</label>
                       <input
                         type="password"
                         placeholder="Enter new password"
-                        style={inputStyle}
+                        className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 rounded-xl text-sm outline-none transition-all duration-200"
                       />
                     </div>
-                    <div style={formGroupStyle}>
-                      <label style={labelStyle}>Confirm New Password</label>
+
+                    {/* Confirm New Password */}
+                    <div className="space-y-2">
+                      <label className="text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400">Confirm New Password</label>
                       <input
                         type="password"
-                        placeholder="Confirm new password"
-                        style={inputStyle}
+                        placeholder="Re-type new password"
+                        className="w-full px-4 py-3 border border-slate-300 dark:border-slate-700 bg-white dark:bg-slate-950 focus:border-sky-500 focus:ring-4 focus:ring-sky-500/10 rounded-xl text-sm outline-none transition-all duration-200"
                       />
                     </div>
+
                   </div>
-                  <button style={{
-                    backgroundColor: '#0ea5e9',
-                    color: 'white',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '12px 24px',
-                    fontSize: '16px',
-                    fontWeight: '500',
-                    cursor: 'pointer'
-                  }}>
-                    Update Password
-                  </button>
+
+                  <div className="mt-6 flex justify-end">
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setShowSuccessToast(true);
+                        setTimeout(() => setShowSuccessToast(false), 4000);
+                      }}
+                      className="px-5 py-2.5 rounded-xl bg-sky-500 hover:bg-sky-600 text-white font-semibold text-sm shadow-lg shadow-sky-500/20 transition-all duration-200 hover:scale-[1.02] active:scale-[0.98]"
+                    >
+                      Update Password
+                    </button>
+                  </div>
                 </div>
 
-                <div style={sectionCardStyle}>
-                  <h4 style={{ fontSize: '20px', fontWeight: '600', color: '#1f2937', marginBottom: '24px' }}>
-                    Data Privacy
-                  </h4>
-                  <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                    <div style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
-                    }}>
-                      <span style={{ color: '#1f2937', fontSize: '16px' }}>Share data for research purposes</span>
-                      <div style={{
-                        width: '48px',
-                        height: '28px',
-                        backgroundColor: '#d1d5db',
-                        borderRadius: '14px',
-                        position: 'relative',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease'
-                      }}>
-                        <div style={{
-                          width: '24px',
-                          height: '24px',
-                          backgroundColor: 'white',
-                          borderRadius: '50%',
-                          position: 'absolute',
-                          top: '2px',
-                          left: '2px',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
-                        }}></div>
+                {/* Data Privacy Controls */}
+                <div className="bg-slate-50/50 dark:bg-slate-900/20 border border-slate-100 dark:border-slate-800/60 p-6 sm:p-8 rounded-2xl">
+                  <h4 className="text-lg font-bold text-slate-800 dark:text-slate-200 mb-2">Data Privacy & Research Consent</h4>
+                  <p className="text-slate-500 dark:text-slate-400 text-sm mb-6">Manage how your diagnostic results and symptoms log data are integrated and securely handled.</p>
+                  
+                  <div className="space-y-5">
+                    
+                    {/* Toggle: Share Data */}
+                    <div className="flex items-center justify-between gap-6 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/40">
+                      <div>
+                        <p className="font-semibold text-sm text-slate-800 dark:text-slate-200">Anonymized Medical Research</p>
+                        <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Allows SymptoScope models to train on anonymous vitals data to improve diagnosis accuracy.</p>
                       </div>
+                      
+                      <button
+                        onClick={() => {
+                          setShareData(!shareData);
+                          // Auto save in background
+                          const cached = localStorage.getItem('symptoscope_profile_addons');
+                          const parsed = cached ? JSON.parse(cached) : {};
+                          localStorage.setItem('symptoscope_profile_addons', JSON.stringify({ ...parsed, shareData: !shareData }));
+                        }}
+                        className={`relative w-12 h-6.5 rounded-full transition-colors duration-300 focus:outline-none ${
+                          shareData ? 'bg-sky-500' : 'bg-slate-200 dark:bg-slate-800'
+                        }`}
+                      >
+                        <span
+                          className={`absolute top-1 left-1 w-4.5 h-4.5 rounded-full bg-white transition-transform duration-300 shadow-md ${
+                            shareData ? 'translate-x-5.5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
                     </div>
-                    <div style={{ 
-                      display: 'flex',
-                      justifyContent: 'space-between',
-                      alignItems: 'center'
-                    }}>
-                      <span style={{ color: '#1f2937', fontSize: '16px' }}>Allow third-party integrations</span>
-                      <div style={{
-                        width: '48px',
-                        height: '28px',
-                        backgroundColor: '#0ea5e9',
-                        borderRadius: '14px',
-                        position: 'relative',
-                        cursor: 'pointer',
-                        transition: 'all 0.3s ease'
-                      }}>
-                        <div style={{
-                          width: '24px',
-                          height: '24px',
-                          backgroundColor: 'white',
-                          borderRadius: '50%',
-                          position: 'absolute',
-                          top: '2px',
-                          left: '2px',
-                          transform: 'translateX(20px)',
-                          transition: 'all 0.3s ease',
-                          boxShadow: '0 2px 6px rgba(0,0,0,0.15)'
-                        }}></div>
+
+                    {/* Toggle: Third-party integrations */}
+                    <div className="flex items-center justify-between gap-6 p-4 rounded-xl bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/40">
+                      <div>
+                        <p className="font-semibold text-sm text-slate-800 dark:text-slate-200">Wearable Device Health Connect</p>
+                        <p className="text-slate-500 dark:text-slate-400 text-xs mt-0.5">Sync dynamic heartbeat and physical activity indices automatically from connected smartbands.</p>
                       </div>
+                      
+                      <button
+                        onClick={() => {
+                          setThirdPartyIntegrations(!thirdPartyIntegrations);
+                          // Auto save in background
+                          const cached = localStorage.getItem('symptoscope_profile_addons');
+                          const parsed = cached ? JSON.parse(cached) : {};
+                          localStorage.setItem('symptoscope_profile_addons', JSON.stringify({ ...parsed, thirdPartyIntegrations: !thirdPartyIntegrations }));
+                        }}
+                        className={`relative w-12 h-6.5 rounded-full transition-colors duration-300 focus:outline-none ${
+                          thirdPartyIntegrations ? 'bg-sky-500' : 'bg-slate-200 dark:bg-slate-800'
+                        }`}
+                      >
+                        <span
+                          className={`absolute top-1 left-1 w-4.5 h-4.5 rounded-full bg-white transition-transform duration-300 shadow-md ${
+                            thirdPartyIntegrations ? 'translate-x-5.5' : 'translate-x-0'
+                          }`}
+                        />
+                      </button>
                     </div>
+
                   </div>
                 </div>
+
               </div>
             )}
 
-            {/* Save Button */}
-            {isEditing && (
-              <div style={{ 
-                display: 'flex', 
-                justifyContent: 'flex-end', 
-                marginTop: '32px', 
-                paddingTop: '32px',
-                borderTop: '1px solid #e5e7eb'
-              }}>
+            {/* Bottom Actions for personal settings edit mode */}
+            {isEditing && activeTab === 'personal' && (
+              <div className="mt-8 pt-6 border-t border-slate-100 dark:border-slate-800 flex justify-end gap-3 animate-[fadeIn_0.3s_ease-out]">
                 <button
                   onClick={() => setIsEditing(false)}
-                  style={saveButtonStyle}
-                  onMouseOver={(e) => e.target.style.backgroundColor = '#0284c7'}
-                  onMouseOut={(e) => e.target.style.backgroundColor = '#0ea5e9'}
+                  className="px-5 py-2.5 rounded-xl border border-slate-200 dark:border-slate-800 text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-900 hover:bg-slate-50 dark:hover:bg-slate-800 text-sm font-semibold active:scale-[0.98] transition-all"
                 >
-                  <Save size={20} />
+                  Cancel
+                </button>
+                <button
+                  onClick={handleSave}
+                  className="px-6 py-2.5 rounded-xl bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-600 hover:to-indigo-700 text-white font-semibold text-sm shadow-lg shadow-sky-500/25 flex items-center gap-2 hover:scale-[1.02] active:scale-[0.98] transition-all"
+                >
+                  <Save size={16} />
                   Save Changes
                 </button>
               </div>
             )}
+
           </div>
         </div>
+
       </div>
     </div>
   );

@@ -1,11 +1,11 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { Container, Row, Col, Card, Form, Button, Badge, Alert, InputGroup } from "react-bootstrap";
 import { UseAuth } from "../contexts/AuthContext";
 import axios from "axios";
+import { Shield, Brain, ArrowLeft, Mail, Lock, Eye, EyeOff, Award, Sparkles, CheckCircle2 } from "lucide-react";
 
 export default function Login() {
-  const { login, backendUrl } = UseAuth();
+  const { login, backendUrl, token } = UseAuth();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     email: "",
@@ -29,34 +29,31 @@ export default function Login() {
     e.preventDefault();
     setIsLoading(true);
     setLoginError("");
-    // Simulate login process
     try {
-      // Handle successful login here
-      const response = await axios.post(`${backendUrl}/api/user/login`, formData);
+      const response = await axios.post(`${backendUrl}/api/user/login`, formData, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       login(response.data.user, response.data.token);
       navigate('/dashboard');
-
     } catch (error) {
       setLoginError("Invalid email or password. Please try again.");
     } finally {
       setIsLoading(false);
     }
   };
+
   const features = [
     {
-      icon: "fas fa-brain",
+      icon: Brain,
       title: "AI-Powered Insights",
       description: "Get personalized health insights powered by advanced machine learning"
     },
     {
-      icon: "fas fa-shield-alt",
+      icon: Shield,
       title: "Secure & Private",
       description: "Your health data is protected with enterprise-grade security"
-    },
-    {
-      icon: "fas fa-mobile-alt",
-      title: "Mobile Ready",
-      description: "Access your health journal anywhere with our mobile apps"
     }
   ];
 
@@ -66,252 +63,259 @@ export default function Login() {
       condition: "Lupus",
       quote: "SymptomAI helped me identify patterns I never noticed before. It's been life-changing.",
       rating: 5
-    },
-    {
-      name: "Michael R.",
-      condition: "Rheumatoid Arthritis",
-      quote: "The AI insights have improved my discussions with my doctor significantly.",
-      rating: 5
     }
   ];
 
   return (
-    <div style={{ paddingTop: '90px', minHeight: '100vh' }}>
-      <Container fluid>
-        <Row className="min-vh-100">
-          {/* Left Side - Login Form */}
-          <Col lg={6} className="d-flex align-items-center justify-content-center p-5">
-            <div style={{ maxWidth: '450px', width: '100%' }}>
+    <div className="pt-20 min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-300">
+      <div className="container mx-auto px-4 md:px-0">
+        <div className="grid grid-cols-1 lg:grid-cols-12 min-h-[calc(100vh-5rem)]">
+          
+          {/* Left Side - Login Form (lg:col-span-6) */}
+          <div className="lg:col-span-6 flex flex-col justify-center py-12 px-4 sm:px-6 md:px-12 lg:px-16 xl:px-24">
+            <div className="w-full max-w-md mx-auto space-y-8">
+              
               {/* Back to Home Link */}
-              <Link to="/" className="text-decoration-none text-muted mb-4 d-inline-flex align-items-center">
-                <i className="fas fa-arrow-left me-2"></i>
+              <Link to="/" className="inline-flex items-center gap-2 text-sm font-semibold text-slate-500 dark:text-slate-400 hover:text-medical-blue dark:hover:text-sky-400 transition-colors">
+                <ArrowLeft size={16} />
                 Back to Home
               </Link>
 
-              {/* Logo & Brand */}
-              <div className="text-center mb-5">
-                <div className="gradient-primary rounded-3 d-inline-flex p-3 mb-3">
-                  <i className="fas fa-brain text-white" style={{ fontSize: '2rem' }}></i>
+              {/* Header Branding */}
+              <div className="text-center lg:text-left space-y-2">
+                <div className="bg-gradient-primary inline-flex p-3 rounded-2xl text-white shadow-lg shadow-medical-blue/20">
+                  <Brain size={28} />
                 </div>
-                <h2 className="fw-bold text-gradient-primary">Welcome Back</h2>
-                <p className="text-muted">Sign in to your SymptomAI account to continue tracking your health</p>
+                <h2 className="text-3xl font-black tracking-tight text-gradient-primary">
+                  Welcome Back
+                </h2>
+                <p className="text-slate-500 dark:text-slate-400 text-sm">
+                  Sign in to your SymptomAI account to continue tracking your health
+                </p>
               </div>
 
-              {/* Login Form */}
-              <Card className="medical-card border-0 shadow">
-                <Card.Body className="p-4">
-                  {loginError && (
-                    <Alert variant="danger" className="mb-4">
-                      <i className="fas fa-exclamation-circle me-2"></i>
-                      {loginError}
-                    </Alert>
-                  )}
+              {/* Login Form Wrapper */}
+              <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800 rounded-3xl p-6 sm:p-8 shadow-xl">
+                {loginError && (
+                  <div className="mb-6 p-4 rounded-xl border border-red-100 dark:border-red-950/30 bg-red-50 dark:bg-red-950/20 text-red-600 dark:text-red-400 text-sm font-semibold flex items-center gap-2">
+                    <span className="h-2 w-2 rounded-full bg-red-500"></span>
+                    {loginError}
+                  </div>
+                )}
 
-                  <Form onSubmit={handleSubmit}>
-                    <Form.Group className="mb-3">
-                      <Form.Label>Email Address</Form.Label>
-                      <InputGroup>
-                        <InputGroup.Text>
-                          <i className="fas fa-envelope text-muted"></i>
-                        </InputGroup.Text>
-                        <Form.Control
-                          className="white-placeholder"
-                          type="email"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleInputChange}
-                          placeholder="Enter your email"
-                          required
-                        />
-                      </InputGroup>
-                    </Form.Group>
+                <form onSubmit={handleSubmit} className="space-y-5">
+                  
+                  {/* Email Input */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Email Address
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
+                        <Mail size={18} />
+                      </span>
+                      <input
+                        type="email"
+                        name="email"
+                        value={formData.email}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full pl-11 pr-4 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 focus:border-medical-blue focus:ring-2 focus:ring-medical-blue/10 rounded-2xl outline-none text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm transition-all dark:placeholder-slate-600"
+                        placeholder="Enter your email"
+                      />
+                    </div>
+                  </div>
 
-                    <Form.Group className="mb-3">
-                      <Form.Label>Password</Form.Label>
-                      <InputGroup>
-                        <InputGroup.Text>
-                          <i className="fas fa-lock text-muted"></i>
-                        </InputGroup.Text>
-                        <Form.Control
-                          className="white-placeholder"
-                          type={showPassword ? "text" : "password"}
-                          name="password"
-                          value={formData.password}
-                          onChange={handleInputChange}
-                          placeholder="Enter your password"
-                          required
-                        />
-                        <Button
-                          variant="outline-secondary"
-                          onClick={() => setShowPassword(!showPassword)}
-                        >
-                          <i className={`fas ${showPassword ? 'fa-eye-slash' : 'fa-eye'}`}></i>
-                        </Button>
-                      </InputGroup>
-                    </Form.Group>
+                  {/* Password Input */}
+                  <div className="space-y-1.5">
+                    <label className="text-xs font-bold text-slate-700 dark:text-slate-300 uppercase tracking-wider">
+                      Password
+                    </label>
+                    <div className="relative">
+                      <span className="absolute inset-y-0 left-0 flex items-center pl-3.5 text-slate-400 pointer-events-none">
+                        <Lock size={18} />
+                      </span>
+                      <input
+                        type={showPassword ? "text" : "password"}
+                        name="password"
+                        value={formData.password}
+                        onChange={handleInputChange}
+                        required
+                        className="w-full pl-11 pr-12 py-3 bg-slate-50 dark:bg-slate-950 border border-slate-200 dark:border-slate-800/80 focus:border-medical-blue focus:ring-2 focus:ring-medical-blue/10 rounded-2xl outline-none text-slate-900 dark:text-slate-100 placeholder-slate-400 text-sm transition-all dark:placeholder-slate-600"
+                        placeholder="Enter your password"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => setShowPassword(!showPassword)}
+                        className="absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 cursor-pointer"
+                      >
+                        {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+                      </button>
+                    </div>
+                  </div>
 
-                    <div className="d-flex justify-content-between align-items-center mb-4">
-                      <Form.Check
+                  {/* Remember Me & Forgot Password */}
+                  <div className="flex items-center justify-between text-xs sm:text-sm pt-1">
+                    <label className="flex items-center gap-2 font-medium text-slate-600 dark:text-slate-300 cursor-pointer">
+                      <input
                         type="checkbox"
                         name="rememberMe"
                         checked={formData.rememberMe}
                         onChange={handleInputChange}
-                        label="Remember me"
-                        id="remember-me"
+                        className="h-4 w-4 rounded border-slate-300 text-medical-blue focus:ring-medical-blue/20 cursor-pointer"
                       />
-                      <Link to="/forgot-password" className="text-primary text-decoration-none">
-                        Forgot password?
-                      </Link>
-                    </div>
-
-                    <Button
-                      type="submit"
-                      className="btn-medical-primary w-100 py-3 mb-3"
-                      disabled={isLoading}
-                    >
-                      {isLoading ? (
-                        <>
-                          <span className="spinner-border spinner-border-sm me-2" role="status"></span>
-                          Signing In...
-                        </>
-                      ) : (
-                        <>
-                          <i className="fas fa-sign-in-alt me-2"></i>
-                          Sign In
-                        </>
-                      )}
-                    </Button>
-
-                    <div className="text-center">
-                      <span className="text-muted">Don't have an account? </span>
-                      <Link to="/register" className="text-primary text-decoration-none fw-semibold">
-                        Create Account
-                      </Link>
-                    </div>
-                  </Form>
-
-                  {/* Social Login Options */}
-                  <div className="mt-4">
-                    <div className="text-center mb-3">
-                      <span className="text-muted">Or continue with</span>
-                    </div>
-                    <div className="d-grid gap-2">
-                      <Button variant="outline-primary" size="sm">
-                        <i className="fab fa-google me-2"></i>
-                        Continue with Google
-                      </Button>
-                      <Button variant="outline-dark" size="sm">
-                        <i className="fab fa-apple me-2"></i>
-                        Continue with Apple
-                      </Button>
-                    </div>
+                      Remember me
+                    </label>
+                    <Link to="/forgot-password" className="text-medical-blue dark:text-sky-400 hover:underline font-bold">
+                      Forgot password?
+                    </Link>
                   </div>
-                </Card.Body>
-              </Card>
+
+                  {/* Sign In Button */}
+                  <button
+                    type="submit"
+                    disabled={isLoading}
+                    className="w-full bg-gradient-primary text-white py-3.5 rounded-2xl font-bold shadow-lg shadow-medical-blue/20 hover:shadow-xl hover:shadow-medical-blue/30 hover:-translate-y-0.5 transition-all duration-300 cursor-pointer flex items-center justify-center gap-2"
+                  >
+                    {isLoading ? (
+                      <>
+                        <span className="w-5 h-5 border-2 border-white border-t-transparent rounded-full animate-spin"></span>
+                        Signing In...
+                      </>
+                    ) : (
+                      <>
+                        Sign In
+                      </>
+                    )}
+                  </button>
+
+                  <div className="text-center pt-2 text-sm text-slate-500">
+                    Don't have an account?{" "}
+                    <Link to="/register" className="text-medical-blue dark:text-sky-400 font-extrabold hover:underline">
+                      Create Account
+                    </Link>
+                  </div>
+
+                </form>
+
+                {/* Divider */}
+                <div className="relative my-6">
+                  <div className="absolute inset-0 flex items-center">
+                    <span className="w-full border-t border-slate-100 dark:border-slate-800"></span>
+                  </div>
+                  <div className="relative flex justify-center text-xs uppercase">
+                    <span className="bg-white dark:bg-slate-900 px-3 text-slate-400 font-bold tracking-wider">Or continue with</span>
+                  </div>
+                </div>
+
+                {/* Social Login Options */}
+                <div className="flex flex-col sm:flex-row gap-3">
+                  <button className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-200 text-sm font-semibold transition-colors cursor-pointer">
+                    <i className="fab fa-google text-red-500"></i>
+                    Google
+                  </button>
+                  <button className="flex-1 inline-flex items-center justify-center gap-2 py-2.5 border border-slate-200 dark:border-slate-800 rounded-xl hover:bg-slate-50 dark:hover:bg-slate-800/50 text-slate-700 dark:text-slate-200 text-sm font-semibold transition-colors cursor-pointer">
+                    <i className="fab fa-apple text-slate-900 dark:text-white"></i>
+                    Apple
+                  </button>
+                </div>
+
+              </div>
 
               {/* Security Notice */}
-              <div className="text-center mt-4">
-                <small className="text-muted">
-                  <i className="fas fa-shield-alt me-1"></i>
-                  Your data is protected with 256-bit SSL encryption
-                </small>
-              </div>
-            </div>
-          </Col>
+              <p className="text-center text-xs text-slate-400 flex items-center justify-center gap-1.5">
+                <Shield size={14} className="text-emerald-500" />
+                Your data is protected with 256-bit SSL encryption
+              </p>
 
-          {/* Right Side - Features & Testimonials */}
-          <Col lg={6} className="bg-primary text-white d-none d-lg-flex flex-column justify-content-center position-relative">
-            <div className="position-absolute top-0 start-0 w-100 h-100"
-              style={{
-                backgroundImage: 'url("data:image/svg+xml,<svg xmlns=\'http://www.w3.org/2000/svg\' viewBox=\'0 0 1000 1000\'><polygon fill=\'%23ffffff\' fill-opacity=\'0.05\' points=\'0,1000 1000,0 1000,1000\'/></svg>")'
-              }}>
             </div>
+          </div>
 
-            <Container className="position-relative">
-              <div className="text-center mb-5">
-                <Badge bg="warning" className="mb-3 px-3 py-2">
-                  <i className="fas fa-award me-2"></i>
+          {/* Right Side - Branding Assets & Info Panel (lg:col-span-6) */}
+          <div className="hidden lg:col-span-6 bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-white flex-col justify-center p-12 relative overflow-hidden rounded-r-3xl">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff02_1px,transparent_1px),linear-gradient(to_bottom,#ffffff02_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+            
+            <div className="max-w-md mx-auto space-y-8 relative z-10">
+              
+              <div className="text-center space-y-4">
+                <span className="inline-flex items-center gap-1.5 px-4.5 py-1.5 rounded-full text-xs font-extrabold bg-amber-400 text-slate-950 shadow-md">
+                  <Award size={14} />
                   Trusted by 10,000+ Patients
-                </Badge>
-                <h1 className="display-4 fw-bold mb-4">
-                  Take Control of Your
-                  <span className="d-block text-warning">Health Journey</span>
+                </span>
+                <h1 className="text-4xl font-extrabold tracking-tight leading-tight">
+                  Take Control of Your <br />
+                  <span className="text-amber-400">Health Journey</span>
                 </h1>
-                <p className="lead opacity-90">
-                  Join thousands of patients who are managing their rare conditions
-                  with AI-powered insights and personalized tracking.
+                <p className="text-slate-300 leading-relaxed text-sm">
+                  Join thousands of patients who are managing their rare conditions with AI-powered insights and personalized tracking.
                 </p>
               </div>
 
-              {/* Features */}
-              <Row className="g-4 mb-5">
-                {features.map((feature, index) => (
-                  <Col md={12} key={index}>
-                    <div className="d-flex align-items-start">
-                      <div className="bg-warning rounded-3 p-3 me-3 flex-shrink-0">
-                        <i className={`${feature.icon} text-primary`} style={{ fontSize: '1.2rem' }}></i>
+              {/* Showcase Features list */}
+              <div className="space-y-4">
+                {features.map((feature, idx) => {
+                  const Icon = feature.icon;
+                  return (
+                    <div key={idx} className="flex gap-4 p-4.5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md">
+                      <div className="bg-amber-400 text-slate-950 w-11 h-11 rounded-xl flex items-center justify-center flex-shrink-0 shadow-md">
+                        <Icon size={20} />
                       </div>
                       <div>
-                        <h5 className="fw-bold mb-2">{feature.title}</h5>
-                        <p className="opacity-90 mb-0">{feature.description}</p>
+                        <h5 className="font-extrabold text-sm text-slate-200 mb-1">{feature.title}</h5>
+                        <p className="text-xs text-slate-300 leading-relaxed">{feature.description}</p>
                       </div>
                     </div>
-                  </Col>
-                ))}
-              </Row>
+                  );
+                })}
+              </div>
 
-              {/* Testimonials */}
-              <div>
-                <h4 className="fw-bold mb-4 text-center">What Our Patients Say</h4>
-                {testimonials.map((testimonial, index) => (
-                  <Card key={index} className="bg-white bg-opacity-10 border-0 mb-3 text-white">
-                    <Card.Body className="p-4">
-                      <div className="d-flex align-items-center mb-3">
-                        <div className="bg-warning rounded-circle d-flex align-items-center justify-content-center me-3"
-                          style={{ width: '50px', height: '50px' }}>
-                          <i className="fas fa-user text-primary"></i>
-                        </div>
-                        <div>
-                          <h6 className="fw-bold mb-0">{testimonial.name}</h6>
-                          <small className="opacity-75">{testimonial.condition}</small>
-                        </div>
-                        <div className="ms-auto">
-                          {[...Array(testimonial.rating)].map((_, i) => (
-                            <i key={i} className="fas fa-star text-warning"></i>
-                          ))}
-                        </div>
+              {/* Testimonials snippet */}
+              <div className="space-y-3">
+                <h6 className="font-bold text-xs uppercase tracking-wider text-slate-400 text-center">What patients say</h6>
+                {testimonials.map((test, index) => (
+                  <div key={index} className="p-5 rounded-2xl bg-white/5 border border-white/10 backdrop-blur-md space-y-3.5">
+                    <div className="flex items-center gap-3">
+                      <div className="bg-amber-400 text-slate-950 w-9 h-9 rounded-full flex items-center justify-center font-bold text-sm">
+                        {test.name[0]}
                       </div>
-                      <p className="mb-0 opacity-90 fst-italic">"{testimonial.quote}"</p>
-                    </Card.Body>
-                  </Card>
+                      <div>
+                        <h6 className="font-bold text-xs text-slate-200">{test.name}</h6>
+                        <small className="text-[10px] text-slate-400">{test.condition}</small>
+                      </div>
+                      <div className="ml-auto flex gap-0.5 text-amber-400 text-xs">
+                        {[...Array(test.rating)].map((_, i) => (
+                          <i key={i} className="fas fa-star"></i>
+                        ))}
+                      </div>
+                    </div>
+                    <p className="text-xs text-slate-300 italic leading-relaxed">
+                      "{test.quote}"
+                    </p>
+                  </div>
                 ))}
               </div>
 
-              {/* Stats */}
-              <Row className="text-center mt-5">
-                <Col xs={4}>
-                  <div className="bg-white bg-opacity-10 rounded-3 p-3">
-                    <h3 className="fw-bold text-warning mb-1">10K+</h3>
-                    <small className="opacity-75">Active Users</small>
-                  </div>
-                </Col>
-                <Col xs={4}>
-                  <div className="bg-white bg-opacity-10 rounded-3 p-3">
-                    <h3 className="fw-bold text-warning mb-1">95%</h3>
-                    <small className="opacity-75">Accuracy Rate</small>
-                  </div>
-                </Col>
-                <Col xs={4}>
-                  <div className="bg-white bg-opacity-10 rounded-3 p-3">
-                    <h3 className="fw-bold text-warning mb-1">500+</h3>
-                    <small className="opacity-75">Conditions</small>
-                  </div>
-                </Col>
-              </Row>
-            </Container>
-          </Col>
-        </Row>
-      </Container>
+              {/* Stats badges */}
+              <div className="grid grid-cols-3 gap-3 text-center">
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 backdrop-blur-md">
+                  <h3 className="font-black text-amber-400 text-lg sm:text-xl">10K+</h3>
+                  <p className="text-[10px] text-slate-400 font-medium">Active Users</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 backdrop-blur-md">
+                  <h3 className="font-black text-amber-400 text-lg sm:text-xl">95%</h3>
+                  <p className="text-[10px] text-slate-400 font-medium">Accuracy</p>
+                </div>
+                <div className="bg-white/5 border border-white/10 rounded-2xl p-3 backdrop-blur-md">
+                  <h3 className="font-black text-amber-400 text-lg sm:text-xl">500+</h3>
+                  <p className="text-[10px] text-slate-400 font-medium">Conditions</p>
+                </div>
+              </div>
+
+            </div>
+          </div>
+
+        </div>
+      </div>
     </div>
   );
 }

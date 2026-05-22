@@ -1,8 +1,6 @@
-
 import React, { useState } from 'react';
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell, Area, AreaChart } from 'recharts';
-import { TrendingUp, TrendingDown, Activity, Heart, Brain, Users, AlertTriangle, CheckCircle } from 'lucide-react';
-
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, BarChart, Bar, PieChart, Pie, Cell } from 'recharts';
+import { TrendingUp, TrendingDown, Activity, Heart, Brain, Users, AlertTriangle, CheckCircle, Clock } from 'lucide-react';
 
 // Mock data for demonstrations
 const vitalTrends = [
@@ -41,367 +39,376 @@ export default function Analysis() {
   const [timeRange, setTimeRange] = useState('6months');
 
   const StatCard = ({ icon: Icon, title, value, change, trend }) => (
-    <div className="card shadow mb-4 rounded-3 bg-white border-0 ">
-      <div className="card-body">
-        <div className="d-flex justify-content-between align-items-center">
-          <div>
-            <h6 className="text-muted mb-2">{title}</h6>
-            <h3 className="mb-1">{value}</h3>
-            <p className={`small mb-0 d-flex align-items-center ${trend === 'up' ? 'text-success' : trend === 'down' ? 'text-danger' : 'text-muted'}`}>
-              {trend === 'up' ? <TrendingUp size={14} className="me-1" /> : trend === 'down' ? <TrendingDown size={14} className="me-1" /> : <Activity size={14} className="me-1 text-muted" />}
-              {change}
-            </p>
-          </div>
-          <div className="bg-primary-light rounded-circle p-3">
-            <Icon size={24} className="text-primary" />
-          </div>
+    <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 shadow-xl shadow-slate-100/50 dark:shadow-none hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between relative overflow-hidden group">
+      <div className="absolute inset-0 bg-gradient-to-br from-transparent to-slate-50 dark:to-slate-950/20 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+      <div className="flex justify-between items-start relative z-10">
+        <div className="space-y-2">
+          <h6 className="text-slate-500 dark:text-slate-400 text-xs font-bold uppercase tracking-wider">{title}</h6>
+          <h3 className="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight">{value}</h3>
+          <p className={`text-xs font-bold flex items-center gap-1 mt-1 ${
+            trend === 'up' ? 'text-emerald-500' : trend === 'down' ? 'text-red-500' : 'text-slate-400'
+          }`}>
+            {trend === 'up' ? <TrendingUp size={14} /> : trend === 'down' ? <TrendingDown size={14} /> : <Activity size={14} />}
+            {change}
+          </p>
+        </div>
+        <div className="p-3 bg-medical-blue/10 dark:bg-sky-500/10 text-medical-blue dark:text-sky-400 rounded-2xl group-hover:scale-110 transition-transform">
+          <Icon size={22} />
         </div>
       </div>
     </div>
   );
 
   const PredictionCard = ({ condition, confidence, trend, risk }) => (
-    <div className="card shadow border-0 mb-3 rounded-4 overflow-hidden prediction-card">
-      <div className="card-body">
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <h5 className="card-title mb-0">{condition}</h5>
-          <span className={`badge rounded-pill ${risk === 'high' ? 'bg-gradient-high' : risk === 'moderate' ? 'bg-gradient-warning' : 'bg-gradient-success'} text-white text-uppercase`}>
-            {risk.toUpperCase()} RISK
-          </span>
-        </div>
-        <div className="d-flex justify-content-between align-items-center mb-3">
-          <span className="small font-weight-bold">Confidence: {confidence}%</span>
-          <span className={`bg-light p-2 rounded-circle ${trend === 'up' ? 'bg-danger-light text-danger' : trend === 'down' ? 'bg-success-light text-success' : 'bg-secondary-light text-secondary'}`}>
-            {trend === 'up' ? <TrendingUp size={16} /> : trend === 'down' ? <TrendingDown size={16} /> : <Activity size={16} />}
-          </span>
-        </div>
-        <div className="progress mb-3" style={{ height: '0.75rem' }}>
+    <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 shadow-lg shadow-slate-100/30 dark:shadow-none space-y-4">
+      <div className="flex justify-between items-center">
+        <h5 className="font-extrabold text-sm sm:text-base text-slate-800 dark:text-slate-100 tracking-tight">{condition}</h5>
+        <span className={`inline-flex items-center px-3 py-1 rounded-full text-[10px] font-black uppercase tracking-wider border ${
+          risk === 'high' 
+            ? 'border-red-500/20 bg-red-500/10 text-red-600 dark:text-red-400' 
+            : risk === 'moderate' 
+            ? 'border-amber-500/20 bg-amber-500/10 text-amber-600 dark:text-amber-400' 
+            : 'border-emerald-500/20 bg-emerald-500/10 text-emerald-600 dark:text-emerald-400'
+        }`}>
+          {risk} RISK
+        </span>
+      </div>
+      
+      <div className="flex justify-between items-center">
+        <span className="text-xs font-bold text-slate-500 dark:text-slate-400">Confidence: {confidence}%</span>
+        <span className={`p-1.5 rounded-lg border ${
+          trend === 'up' 
+            ? 'border-red-500/20 bg-red-500/10 text-red-500' 
+            : trend === 'down' 
+            ? 'border-emerald-500/20 bg-emerald-500/10 text-emerald-500' 
+            : 'border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-950 text-slate-400'
+        }`}>
+          {trend === 'up' ? <TrendingUp size={14} /> : trend === 'down' ? <TrendingDown size={14} /> : <Activity size={14} />}
+        </span>
+      </div>
+
+      <div className="space-y-1">
+        <div className="w-full bg-slate-100 dark:bg-slate-950 h-2.5 rounded-full overflow-hidden">
           <div 
-            className="progress-bar bg-primary-gradient rounded-pill" 
+            className="bg-gradient-primary h-full rounded-full transition-all duration-500" 
             style={{ width: `${confidence}%` }}
           ></div>
         </div>
-        <p className="small font-weight-bold text-muted text-center mb-0">Last updated: {new Date().toLocaleDateString()}</p>
+        <p className="text-[10px] font-bold text-slate-400 text-center flex items-center justify-center gap-1">
+          <Clock size={10} />
+          Last updated: {new Date().toLocaleDateString()}
+        </p>
       </div>
     </div>
   );
 
   return (
-    <div className="min-vh-100 analytics-bg py-5" >
-      <div className="container">
+    <div className="min-h-screen pt-28 pb-16 bg-slate-50 dark:bg-slate-950 text-slate-800 dark:text-slate-200 transition-colors duration-300">
+      <div className="container mx-auto px-4 lg:px-8">
+        
         {/* Header */}
-        <div className="mb-4 " style={{marginTop:'100px'}}>
-          <h1 className="display-5 fw-bold mb-2">AI Analytics & Insights </h1>
-          <p className="lead text-muted">Advanced pattern recognition and predictive health analytics</p>
+        <div className="space-y-2 mb-8">
+          <span className="inline-flex items-center gap-1.5 px-4.5 py-1.5 rounded-full text-xs font-extrabold bg-sky-500/10 text-medical-blue dark:text-sky-400 tracking-wider uppercase">
+            Data Synthesis Engine
+          </span>
+          <h1 className="text-3xl sm:text-4xl font-black text-gradient-primary tracking-tight">
+            AI Analytics & Insights
+          </h1>
+          <p className="text-slate-500 dark:text-slate-400 text-sm sm:text-base font-semibold leading-relaxed">
+            Advanced pattern recognition and predictive wellness models compiled for patient safety.
+          </p>
         </div>
 
-        {/* Navigation Tabs */}
-        <ul className="nav nav-pills nav-pills-custom mb-4">
-          <li className="nav-item">
-            <button
-              className={`nav-link ${activeTab === 'overview' ? 'active' : ''}`}
-             onClick={() => setActiveTab('overview')}
-            >
-              Overview
-            </button>
-          </li>
-          <li className="nav-item">
-            <button
-              className={`nav-link ${activeTab === 'trends' ? 'active' : ''}`}
-             onClick={() => setActiveTab('trends')}
-            >
-              Health Trends
-            </button>
-          </li>
-          <li className="nav-item">
-            <button
-              className={`nav-link ${activeTab === 'predictions' ? 'active' : ''}`}
-              onClick={() => setActiveTab('predictions')}
-            >
-              AI Predictions
-            </button>
-          </li>
-          <li className="nav-item">
-            <button
-               className={`nav-link ${activeTab === 'demographics' ? 'active' : ''}`}
-              onClick={() => setActiveTab('demographics')}
-            >
-              Demographics
-            </button>
-          </li>
-        </ul>
+        {/* Tab & Timeline Bar */}
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-8">
+          {/* Navigation Tabs */}
+          <div className="flex flex-wrap gap-1.5 p-1.5 bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-2xl shadow-sm">
+            {[
+              { id: 'overview', label: 'Overview' },
+              { id: 'trends', label: 'Health Trends' },
+              { id: 'predictions', label: 'AI Predictions' },
+              { id: 'demographics', label: 'Demographics' }
+            ].map(tab => (
+              <button
+                key={tab.id}
+                onClick={() => setActiveTab(tab.id)}
+                className={`px-4.5 py-2.5 rounded-xl text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+                  activeTab === tab.id
+                    ? 'bg-gradient-primary text-white shadow-md shadow-medical-blue/20'
+                    : 'text-slate-500 dark:text-slate-450 hover:text-slate-850 dark:hover:text-slate-200'
+                }`}
+              >
+                {tab.label}
+              </button>
+            ))}
+          </div>
 
-        {/* Time Range Selector */}
-        <div className="d-flex justify-content-end mb-4">
-          <select 
-            value={timeRange}
-            onChange={(e) => setTimeRange(e.target.value)}
-            className="form-select form-select-sm w-auto"
-          >
-            <option value="1month">Last Month</option>
-            <option value="3months">Last 3 Months</option>
-            <option value="6months">Last 6 Months</option>
-            <option value="1year">Last Year</option>
-          </select>
+          {/* Time Range Selector */}
+          <div className="flex items-center">
+            <select 
+              value={timeRange}
+              onChange={(e) => setTimeRange(e.target.value)}
+              className="px-4 py-2.5 bg-white dark:bg-slate-900 border border-slate-150 dark:border-slate-800/80 rounded-2xl text-xs sm:text-sm font-bold text-slate-700 dark:text-slate-300 outline-none focus:ring-2 focus:ring-medical-blue/15 transition-all cursor-pointer"
+            >
+              <option value="1month">Last Month</option>
+              <option value="3months">Last 3 Months</option>
+              <option value="6months">Last 6 Months</option>
+              <option value="1year">Last Year</option>
+            </select>
+          </div>
         </div>
 
-        {/* Overview Tab */}
+        {/* Overview Tab Content */}
         {activeTab === 'overview' && (
-          <div>
-            {/* Key Metrics */}
-            <div className="row g-4 mb-5">
-              <div className="col-md-6 col-lg-3">
-                <StatCard
-                  icon={Users}
-                  title="Total Patients"
-                  value="1,247"
-                  change="+12% from last month"
-                  trend="up"
-                />
-              </div>
-              <div className="col-md-6 col-lg-3">
-                <StatCard
-                  icon={Activity}
-                  title="Active Monitoring"
-                  value="892"
-                  change="+8% from last month"
-                  trend="up"
-                />
-              </div>
-              <div className="col-md-6 col-lg-3">
-                <StatCard
-                  icon={AlertTriangle}
-                  title="High Risk Cases"
-                  value="34"
-                  change="-5% from last month"
-                  trend="down"
-                />
-              </div>
-              <div className="col-md-6 col-lg-3">
-                <StatCard
-                  icon={CheckCircle}
-                  title="Resolved Cases"
-                  value="156"
-                  change="+18% from last month"
-                  trend="up"
-                />
-              </div>
+          <div className="space-y-6 md:space-y-8 animate-fade-in">
+            {/* Key Metrics Cards Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
+              <StatCard
+                icon={Users}
+                title="Total Patients"
+                value="1,247"
+                change="+12% from last month"
+                trend="up"
+              />
+              <StatCard
+                icon={Activity}
+                title="Active Monitoring"
+                value="892"
+                change="+8% from last month"
+                trend="up"
+              />
+              <StatCard
+                icon={AlertTriangle}
+                title="High Risk Cases"
+                value="34"
+                change="-5% from last month"
+                trend="down"
+              />
+              <StatCard
+                icon={CheckCircle}
+                title="Resolved Cases"
+                value="156"
+                change="+18% from last month"
+                trend="up"
+              />
             </div>
 
-            {/* Quick Insights */}
-            <div className="card shadow-sm mb-4">
-              <div className="card-body" style={{height:'300px'}}>
-                <h3 className="card-title mb-3" style={{fontSize:'28px'}}>Key Insights</h3><br />
-                <div className="row g-4">
-                  <div className="col-md-6" style={{fontSize:'22px'}}>
-                    <div className="insight-item">
-                      <span className="dot bg-success"></span>
-                      <span>Overall patient health trending positively</span>
-                    </div>
-                    <br />
-                    <div className="insight-item">
-                      <span className="dot bg-primary"></span>
-                      <span>Mental health support showing increased demand</span>
-                    </div>
-                    <br />
-                    <div className="insight-item">
-                      <span className="dot bg-warning"></span>
-                      <span>Seasonal patterns detected in respiratory conditions</span>
-                    </div>
-                    <br />
+            {/* Quick Insights Card */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/50 dark:shadow-none">
+              <div className="flex items-center gap-2 mb-6 border-b border-slate-100 dark:border-slate-850 pb-4">
+                <span className="h-2 w-2 rounded-full bg-medical-blue animate-pulse"></span>
+                <h4 className="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide">
+                  Key Insights
+                </h4>
+              </div>
+              
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4 sm:gap-6">
+                {[
+                  { text: "Overall patient health trending positively", color: "bg-emerald-500" },
+                  { text: "Mental health support showing increased demand", color: "bg-medical-blue" },
+                  { text: "Seasonal patterns detected in respiratory conditions", color: "bg-amber-500" }
+                ].map((insight, index) => (
+                  <div key={index} className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/60 rounded-2xl">
+                    <span className={`h-2.5 w-2.5 rounded-full ${insight.color} flex-shrink-0`}></span>
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{insight.text}</span>
                   </div>
-                  <div className="col-md-6" style={{fontSize:'22px'}}>
-                    <div className="insight-item">
-                      <span className="dot bg-purple"></span>
-                      <span>AI model accuracy improved by 12% this quarter</span>
-                    </div>
-                    <br />
-                    <div className="insight-item">
-                      <span className="dot bg-danger"></span>
-                      <span>Early intervention reduced hospital readmissions by 23%</span>
-                    </div>
-                    <br />
-                    <div className="insight-item">
-                      <span className="dot bg-indigo"></span>
-                      <span>Patient engagement with digital tools up 31%</span>
-                    </div>
+                ))}
+
+                {[
+                  { text: "AI model accuracy improved by 12% this quarter", color: "bg-purple-500" },
+                  { text: "Early intervention reduced hospital readmissions by 23%", color: "bg-red-500" },
+                  { text: "Patient engagement with digital tools up 31%", color: "bg-indigo-500" }
+                ].map((insight, index) => (
+                  <div key={index} className="flex items-center gap-3 p-4 bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-800/60 rounded-2xl">
+                    <span className={`h-2.5 w-2.5 rounded-full ${insight.color} flex-shrink-0`}></span>
+                    <span className="text-sm font-semibold text-slate-700 dark:text-slate-200">{insight.text}</span>
                   </div>
-                </div>
+                ))}
               </div>
             </div>
           </div>
         )}
 
-        {/* Health Trends Tab */}
-         {activeTab === 'trends' && (
-          <div>
-            <div className="card shadow-sm mb-4">
-              <div className="card-body">
-                <h3 className="card-title mb-3">Vital Signs Trends</h3>
-                <div className="card-chart">
-                  <ResponsiveContainer width="100%" height={300}>
-                    <LineChart data={vitalTrends}>
-                      <CartesianGrid strokeDasharray="3 3" />
-                      <XAxis dataKey="date" />
-                      <YAxis />
-                      <Tooltip />
-                      <Legend />
-                      <Line type="monotone" dataKey="heartRate" stroke="#DC3545" strokeWidth={2} name="Heart Rate (BPM)" />
-                      <Line type="monotone" dataKey="bloodPressure" stroke="#0D6EFD" strokeWidth={2} name="Blood Pressure (Systolic)" />
-                    </LineChart>
-                  </ResponsiveContainer>
-                </div>
+        {/* Health Trends Tab Content */}
+        {activeTab === 'trends' && (
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-6 md:gap-8 animate-fade-in">
+            {/* Vital Signs Trends */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 shadow-xl shadow-slate-100/50 dark:shadow-none space-y-4">
+              <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide border-b border-slate-100 dark:border-slate-800/80 pb-3">
+                Vital Signs Trends
+              </h3>
+              <div className="h-[300px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <LineChart data={vitalTrends} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:hidden" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" className="hidden dark:block" />
+                    <XAxis dataKey="date" tick={{ fill: '#64748b', fontSize: 11 }} />
+                    <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
+                    <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }} />
+                    <Legend iconType="circle" wrapperStyle={{ fontSize: 12, fontWeight: 'bold', paddingTop: 10 }} />
+                    <Line type="monotone" dataKey="heartRate" stroke="#ef4444" strokeWidth={3} name="Heart Rate (BPM)" activeDot={{ r: 6 }} />
+                    <Line type="monotone" dataKey="bloodPressure" stroke="#0ea5e9" strokeWidth={3} name="Blood Pressure (Systolic)" activeDot={{ r: 6 }} />
+                  </LineChart>
+                </ResponsiveContainer>
               </div>
             </div>
-            <div className="card shadow-sm mb-4">
-              <div className="card-body">
-                <h3 className="card-title mb-3">Risk Factor Distribution</h3>
-                <div className="card-chart">
-                  <ResponsiveContainer width="100%" height={300}>
-                    <PieChart>
-                      <Pie
-                        data={riskFactors}
-                        cx="50%"
-                        cy="50%"
-                        outerRadius={100}
-                        fill="#8884d8"
-                        dataKey="value"
-                        label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
-                      >
-                        {riskFactors.map((entry, index) => (
-                          <Cell key={`cell-${index}`} fill={entry.color} />
-                        ))}
-                      </Pie>
-                      <Tooltip />
-                    </PieChart>
-                  </ResponsiveContainer>
-                </div>
+
+            {/* Risk Factor Distribution */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 shadow-xl shadow-slate-100/50 dark:shadow-none space-y-4">
+              <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide border-b border-slate-100 dark:border-slate-800/80 pb-3">
+                Risk Factor Distribution
+              </h3>
+              <div className="h-[300px] w-full flex items-center justify-center">
+                <ResponsiveContainer width="100%" height="100%">
+                  <PieChart>
+                    <Pie
+                      data={riskFactors}
+                      cx="50%"
+                      cy="50%"
+                      outerRadius={85}
+                      fill="#8884d8"
+                      dataKey="value"
+                      label={({ name, percent }) => `${name} ${(percent * 100).toFixed(0)}%`}
+                      labelLine={false}
+                    >
+                      {riskFactors.map((entry, index) => (
+                        <Cell key={`cell-${index}`} fill={entry.color} />
+                      ))}
+                    </Pie>
+                    <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }} />
+                  </PieChart>
+                </ResponsiveContainer>
               </div>
             </div>
           </div>
-        )} 
+        )}
 
-        {/* AI Predictions Tab */}
-         {activeTab === 'predictions' && (
-          <div>
-            <div className="card mb-4 bg-gradient-primary">
-              <div className="card-body pb-5 pt-4 px-4">
-                <div className="d-flex flex-column flex-md-row align-items-center justify-content-between mb-5">
-                  <div className="d-flex align-items-center mb-4 mb-md-0">
-                    <div className="rounded-circle me-3 bg-primary-blue p-3">
-                      <Brain size={24} className="text-white" />
-                    </div>
-                    <h3 className="card-title mb-0">AI Risk Predictions</h3>
+        {/* AI Predictions Tab Content */}
+        {activeTab === 'predictions' && (
+          <div className="space-y-6 md:space-y-8 animate-fade-in">
+            {/* Predictions List Container */}
+            <div className="bg-gradient-to-r from-medical-blue via-indigo-500 to-indigo-600 dark:from-slate-900 dark:via-slate-850 dark:to-slate-900 rounded-3xl p-6 sm:p-8 text-white relative overflow-hidden">
+              <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff02_1px,transparent_1px),linear-gradient(to_bottom,#ffffff01_1px,transparent_1px)] bg-[size:3rem_3rem]"></div>
+              
+              <div className="relative z-10 flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6 border-b border-white/10 pb-4">
+                <div className="flex items-center gap-3">
+                  <div className="p-3 bg-white/10 rounded-2xl backdrop-blur-md">
+                    <Brain size={24} />
                   </div>
-                  <div className="badge bg-white text-primary-blue">
-                    <span className="fa-stack text-success me-1"></span>
-                    <span>Neural Network Model v2.1</span>
+                  <div>
+                    <h3 className="text-xl sm:text-2xl font-black tracking-tight">AI Risk Predictions</h3>
+                    <p className="text-xs text-slate-200">Neural Network Model v2.1 (Optimized)</p>
                   </div>
                 </div>
-                <div className="row">
-                  {aiPredictions.map((prediction, index) => (
-                    <div key={index} className="col-md-6 mb-4">
-                      <PredictionCard {...prediction} />
-                    </div>
-                  ))}
+                <div>
+                  <span className="inline-flex items-center px-4 py-1.5 bg-emerald-500 text-white rounded-full text-xs font-bold tracking-wider uppercase">
+                    Active Assessment
+                  </span>
                 </div>
               </div>
+
+              <div className="relative z-10 grid grid-cols-1 sm:grid-cols-2 gap-4">
+                {aiPredictions.map((prediction, index) => (
+                  <PredictionCard key={index} {...prediction} />
+                ))}
+              </div>
             </div>
-            <div className="card shadow-sm mb-4 bg-gradient-blue">
-              <div className="card-body">
-                <div className="d-flex flex-column flex-md-row align-items-center justify-content-center mb-4">
-                  <div className="rounded-circle me-3 bg-primary-blue p-3 mb-3 mb-md-0">
-                    <Brain size={24} className="text-white" />
-                  </div>
-                  <h3 className="card-title mb-0">Model Performance Metrics</h3>
+
+            {/* Performance Metrics Block */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/50 dark:shadow-none space-y-6">
+              <div className="text-center space-y-2">
+                <div className="inline-flex p-3 bg-indigo-500/10 text-indigo-500 rounded-2xl">
+                  <Activity size={24} />
                 </div>
-                <div className="row g-4">
-                  {[
-                    { name: "Overall Accuracy", value: 94.2, icon: CheckCircle, color: "blue" },
-                    { name: "Sensitivity", value: 89.7, icon: TrendingUp, color: "success" },
-                    { name: "Specificity", value: 91.4, icon: Activity, color: "purple" }
-                  ].map((metric, index) => (
-                    <div key={index} className="col-md-4 mb-3">
-                      <div className="card text-center shadow-sm">
-                        <div className="card-body">
-                          <div className="rounded-circle d-inline-flex align-items-center justify-content-center mb-3 p-4 bg-gradient-light">
-                            <metric.icon size={24} className={`text-${metric.color}`} />
-                          </div>
-                          <h3 className="display-2 mb-2">{metric.value}%</h3>
-                          <h6 className="mb-3">{metric.name}</h6>
-                          <div className="progress" style={{ height: '8px' }}>
-                            <div
-                              className={`progress-bar bg-gradient-${metric.color}`} 
-                              style={{ width: `${metric.value}%` }}
-                            ></div>
-                          </div>
-                        </div>
-                      </div>
+                <h3 className="text-xl font-black text-slate-800 dark:text-slate-100 tracking-tight uppercase">
+                  Model Performance Metrics
+                </h3>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                {[
+                  { name: "Overall Accuracy", value: 94.2, icon: CheckCircle, gradient: "from-blue-500 to-sky-600", text: "text-blue-500", progressBg: "bg-blue-500" },
+                  { name: "Sensitivity", value: 89.7, icon: TrendingUp, gradient: "from-emerald-500 to-teal-600", text: "text-emerald-500", progressBg: "bg-emerald-500" },
+                  { name: "Specificity", value: 91.4, icon: Activity, gradient: "from-purple-500 to-indigo-600", text: "text-purple-500", progressBg: "bg-purple-500" }
+                ].map((metric, index) => (
+                  <div key={index} className="bg-slate-50 dark:bg-slate-950/40 border border-slate-100 dark:border-slate-850 rounded-3xl p-6 flex flex-col items-center text-center space-y-4">
+                    <div className={`p-4 rounded-full bg-slate-100 dark:bg-slate-900 ${metric.text}`}>
+                      <metric.icon size={26} />
                     </div>
-                  ))}
-                </div>
-                <div className="mt-4 d-flex justify-content-center">
-                  <button className="btn btn-sm btn-blue d-flex align-items-center">
-                    <Heart size={16} className="me-2" />
-                    <span>AI Model Status: Optimized & Active</span>
-                  </button>
-                </div>
+                    <div className="space-y-1">
+                      <h3 className="text-4xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
+                        {metric.value}%
+                      </h3>
+                      <h6 className="text-xs font-bold text-slate-500 dark:text-slate-405 uppercase tracking-wide">
+                        {metric.name}
+                      </h6>
+                    </div>
+                    <div className="w-full bg-slate-200 dark:bg-slate-900 h-2 rounded-full overflow-hidden">
+                      <div className={`h-full ${metric.progressBg} rounded-full`} style={{ width: `${metric.value}%` }}></div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              <div className="flex justify-center pt-2">
+                <button className="px-5 py-2.5 bg-slate-50 dark:bg-slate-950 hover:bg-slate-100 dark:hover:bg-slate-900 border border-slate-150 dark:border-slate-800 text-slate-600 dark:text-slate-300 font-bold rounded-full text-xs sm:text-sm transition-colors cursor-pointer flex items-center gap-2">
+                  <Heart size={16} className="text-red-500" />
+                  AI Model Status: Optimized & Active
+                </button>
               </div>
             </div>
           </div>
-        )} 
+        )}
 
-        {/* Demographics Tab */}
-         {activeTab === 'demographics' && (
-          <div>
-            <div className="card shadow-sm mb-4 bg-gradient-blue">
-              <div className="card-body">
-                <div className="d-flex flex-column flex-md-row align-items-center justify-content-center mb-5">
-                  <div className="rounded-circle me-3 bg-primary-blue p-3 mb-3 mb-md-0">
-                    <Users size={24} className="text-white" />
-                  </div>
-                  <h3 className="card-title mb-0">Patient Demographics</h3>
-                </div>
-                <div className="card shadow-sm mb-4">
-                  <div className="card-body">
-                    <ResponsiveContainer width="100%" height={350}>
-                      <BarChart data={patientDemographics}>
-                        <CartesianGrid strokeDasharray="3 3" stroke="#e0f2fe" />
-                        <XAxis dataKey="ageGroup" />
-                        <YAxis />
-                        <Tooltip />
-                        <Bar dataKey="count" fill="#0D6EFD" radius={[5, 5, 0, 0]} />
-                      </BarChart>
-                    </ResponsiveContainer>
-                  </div>
-                </div>
+        {/* Demographics Tab Content */}
+        {activeTab === 'demographics' && (
+          <div className="space-y-6 md:space-y-8 animate-fade-in">
+            {/* Chart Grid */}
+            <div className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-800/80 rounded-3xl p-6 sm:p-8 shadow-xl shadow-slate-100/50 dark:shadow-none space-y-4">
+              <h3 className="text-lg font-black text-slate-800 dark:text-slate-100 uppercase tracking-wide border-b border-slate-100 dark:border-slate-800/80 pb-3">
+                Patient Demographics age trends
+              </h3>
+              <div className="h-[350px] w-full">
+                <ResponsiveContainer width="100%" height="100%">
+                  <BarChart data={patientDemographics} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
+                    <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" className="dark:hidden" />
+                    <CartesianGrid strokeDasharray="3 3" stroke="#1e293b" className="hidden dark:block" />
+                    <XAxis dataKey="ageGroup" tick={{ fill: '#64748b', fontSize: 11 }} />
+                    <YAxis tick={{ fill: '#64748b', fontSize: 11 }} />
+                    <Tooltip contentStyle={{ borderRadius: '16px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.05)' }} />
+                    <Bar dataKey="count" fill="#0ea5e9" radius={[6, 6, 0, 0]} maxBarSize={50} />
+                  </BarChart>
+                </ResponsiveContainer>
               </div>
             </div>
-            <div className="row g-4 mb-5">
+
+            {/* Demographics Stats Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 md:gap-6">
               {patientDemographics.map((demo, index) => (
-                <div key={index} className="col-md-6 col-lg-3">
-                  <div className="card shadow-sm bg-white">
-                    <div className="card-body text-center">
-                      <div className="rounded-circle d-inline-flex align-items-center justify-content-center mb-4 p-4 bg-gradient-blue">
-                        <Users size={24} className="text-white" />
-                      </div>
-                      <h3 className="display-6">{demo.count}</h3>
-                      <h6>{demo.ageGroup} years</h6>
-                      <h3 className="text-blue">{demo.percentage}%</h3>
-                      <div className="progress mt-3 mb-2">
-                        <div 
-                          className="progress-bar bg-blue-gradient rounded-pill" 
-                          style={{ width: `${demo.percentage}%` }}
-                        ></div>
-                      </div>
-                      <small className="text-muted">of total patients</small>
-                    </div>
+                <div key={index} className="bg-white dark:bg-slate-900 border border-slate-100 dark:border-slate-850 rounded-3xl p-6 text-center space-y-4 shadow-md">
+                  <div className="p-3.5 bg-sky-500/10 text-medical-blue dark:text-sky-400 rounded-full inline-flex">
+                    <Users size={20} />
+                  </div>
+                  <div className="space-y-1">
+                    <h3 className="text-3xl font-black text-slate-800 dark:text-slate-100 tracking-tight">
+                      {demo.count}
+                    </h3>
+                    <h6 className="text-xs font-bold text-slate-500 uppercase tracking-wider">
+                      {demo.ageGroup} years
+                    </h6>
+                    <h4 className="text-sm font-extrabold text-medical-blue dark:text-sky-400">
+                      {demo.percentage}% of total
+                    </h4>
+                  </div>
+                  <div className="w-full bg-slate-100 dark:bg-slate-950 h-2 rounded-full overflow-hidden">
+                    <div className="bg-gradient-primary h-full rounded-full" style={{ width: `${demo.percentage}%` }}></div>
                   </div>
                 </div>
               ))}
             </div>
           </div>
-        )} 
+        )}
+
       </div>
     </div>
   );

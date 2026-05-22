@@ -1,5 +1,4 @@
 import "./global.css";
-import "bootstrap/dist/css/bootstrap.min.css";
 
 import { createRoot } from "react-dom/client";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -22,7 +21,7 @@ const App = () => (
   <AuthProvider>
     <ThemeProvider>
       <BrowserRouter>
-        <div className="min-vh-100">
+        <div className="min-h-screen bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-50 transition-colors duration-300">
           <Header />
           <main>
             <Routes>
@@ -42,7 +41,7 @@ const App = () => (
         </div>
       </BrowserRouter>
     </ThemeProvider>
-    </AuthProvider>
+  </AuthProvider>
 );
 
 createRoot(document.getElementById("root")).render(<App />);

@@ -59,37 +59,61 @@ authApi.interceptors.response.use(
 );
 
 export const AuthProvider = ({ children }) => {
-    const [isLogin, setIsLogin] = useState(false)
-    const [user, setUser] = useState(null);
+    const [isLogin, setIsLogin] = useState(() => {
+        return !!localStorage.getItem("authToken");
+    });
+    const [user, setUser] = useState(() => {
+        const savedUser = localStorage.getItem("authUser");
+        try {
+            return savedUser ? JSON.parse(savedUser) : null;
+        } catch {
+            return null;
+        }
+    });
     const token = localStorage.getItem("authToken");
 
     const fetchProfile = async () => {
         try {
-            const res = await authApi.get("/user/profile");
+            const res = await authApi.get("/user/profile", {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                }
+            });
             setUser(res.data.user);
             setIsLogin(true);
+            localStorage.setItem("authUser", JSON.stringify(res.data.user));
         }
         catch (error) {
             console.error("Failed to fetch profile:", error);
             setIsLogin(false);
             setUser(null);
+            localStorage.removeItem("authToken");
+            localStorage.removeItem("authUser");
         }
     }
 
     useEffect(() => {
-        if (token) fetchProfile();
+        if (token) {
+            fetchProfile();
+        } else {
+            setIsLogin(false);
+            setUser(null);
+        }
     }, [token])
 
-    const login = (userData, token) => {
+    const login = (userData, userToken) => {
         setIsLogin(true);
         setUser(userData);
-        localStorage.setItem("authToken", token);
-    }
+        localStorage.setItem("authToken", userToken);
+        localStorage.setItem("authUser", JSON.stringify(userData));
+    };
+    
     const logout = () => {
         setIsLogin(false);
         setUser(null);
         localStorage.removeItem("authToken");
-    }
+        localStorage.removeItem("authUser");
+    };
 
     return (
         <AuthContext.Provider value={{ isLogin, user, login, logout, token, backendUrl }}>

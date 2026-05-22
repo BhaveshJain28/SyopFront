@@ -10,11 +10,13 @@ export const ThemeProvider = ({ children }) => {
   });
 
   useEffect(() => {
-    // Apply the theme classes to the body
+    // Apply the theme classes to the html and body
     if (isDarkMode) {
+      document.documentElement.classList.add('dark');
       document.body.classList.add('dark-mode');
       document.body.classList.remove('light-mode');
     } else {
+      document.documentElement.classList.remove('dark');
       document.body.classList.add('light-mode');
       document.body.classList.remove('dark-mode');
     }

@@ -1,12 +1,11 @@
 import { Link } from "react-router-dom";
-import { Container, Row, Col, Card, Button, Badge, Carousel } from "react-bootstrap";
 import { useTheme } from "../contexts/ThemeContext";
-import SymptoScopeLogo  from "../public/SymptoScopeLogo.png";
 import { UseAuth } from "../contexts/AuthContext";
+
 export default function Index() {
-  const { isDarkMode} = useTheme();
-  const { user, isLogin } = UseAuth();
-  
+  const { isDarkMode } = useTheme();
+  const { isLogin } = UseAuth();
+
   const features = [
     {
       icon: "fas fa-brain",
@@ -25,51 +24,6 @@ export default function Index() {
       title: "Advanced Analytics Dashboard",
       description: "Comprehensive visualizations and insights that help you understand your health trends and share meaningful data with your healthcare team.",
       benefits: ["Trend visualization", "Custom reports", "Doctor sharing", "Progress tracking"]
-    },
-    // {
-    //   icon: "fas fa-shield-alt",
-    //   title: "Medical-Grade Security",
-    //   description: "HIPAA compliant platform with enterprise-level security ensuring your sensitive health information is always protected.",
-    //   benefits: ["HIPAA compliant", "End-to-end encryption", "Secure cloud storage", "Regular audits"]
-    // },
-    // {
-    //   icon: "fas fa-users-medical",
-    //   title: "Healthcare Integration",
-    //   description: "Seamlessly share comprehensive reports with your medical team and integrate with existing healthcare workflows.",
-    //   benefits: ["Doctor collaboration", "Report generation", "EHR integration", "Telemedicine support"]
-    // },
-    // {
-    //   icon: "fas fa-globe",
-    //   title: "Research Contribution",
-    //   description: "Optionally contribute anonymized data to advance rare disease research and help improve treatments for future patients.",
-    //   benefits: ["Anonymous participation", "Research advancement", "Community impact", "Medical breakthroughs"]
-    // }
-  ];
-
-  const testimonials = [
-    {
-      name: "Sarah Mitchell",
-      condition: "Systemic Lupus",
-      location: "Boston, MA",
-      quote: "SymptomAI helped me identify trigger patterns I never noticed before. My doctor was amazed by the detailed insights, and it's completely changed how we approach my treatment plan.",
-      rating: 5,
-      image: "https://via.placeholder.com/80x80/007bff/ffffff?text=SM"
-    },
-    {
-      name: "Michael Rodriguez",
-      condition: "Rheumatoid Arthritis",
-      location: "Austin, TX", 
-      quote: "The AI predictions are incredibly accurate. I can now prepare for flare-ups days in advance, which has given me so much more control over my condition.",
-      rating: 5,
-      image: "https://via.placeholder.com/80x80/28a745/ffffff?text=MR"
-    },
-    {
-      name: "Dr. Emily Chen",
-      role: "Rheumatologist",
-      location: "San Francisco, CA",
-      quote: "The detailed patient reports from SymptomAI have revolutionized my practice. I can make more informed decisions with better data than ever before.",
-      rating: 5,
-      image: "https://via.placeholder.com/80x80/17a2b8/ffffff?text=EC"
     }
   ];
 
@@ -108,391 +62,284 @@ export default function Index() {
   ];
 
   return (
-    <div style={{ paddingTop: '80px' }}>
+    <div className="pt-20 overflow-x-hidden">
+      
       {/* Hero Section */}
-      <section className="hero-section" style={{ color: '#ffffff' }}>
-        <Container>
-          <Row className="align-items-center">
-            <Col lg={8} className="hero-content">
-              <div className="animate-fade-in">
-                <h1 className="display-2 fw-bold mb-4" style={{ color: '#ffffff', lineHeight: '1.2' }}>
-                  Transform Your
-                  <span className="d-block" style={{ color: '#fbbf24' }}>Health Journey</span>
-                </h1>
-                <p className="lead mb-5 text-justify" style={{ color: 'rgba(255, 255, 255, 0.9)', fontSize: '1.25rem', lineHeight: '1.6' }}>
-                  Navigating a rare condition can feel like walking in the dark. Our AI-powered journal helps you document your symptoms, analyze patterns, and discover possible conditions before they become critical.
-                </p>
-                <div className="d-flex flex-wrap gap-3">
-                  <Button
-                    size="lg"
-                    className="px-5 py-3 shadow-lg"
-                    style={{
-                      borderRadius: '50px',
-                      fontWeight: '600',
-                      letterSpacing: '0.5px',
-                      background: 'rgba(255, 255, 255, 0.2)',
-                      border: '2px solid rgba(255, 255, 255, 0.3)',
-                      color: '#ffffff',
-                      backdropFilter: 'blur(10px)'
-                    }}
-                  >
-                    <i className="fas fa-rocket me-2"></i>
-                    {
-                      !isLogin ? <Link to="/register" style={{ textDecoration:"none", color:"#fff"}}>Get Started <i className="fas fa-arrow-right "></i></Link>
-                      : <Link to="/dashboard" style={{ textDecoration:"none", color:"#fff"}}>Go to Dashboard <i className="fas fa-arrow-right "></i></Link>
-                    }
-                  </Button>
-                </div>
-              </div>
-            </Col>
-            <Col lg={4} className="text-center">
-              <div className="animate-slide-up">
-                <div
-                  className="p-5 rounded-4 shadow-lg"
-                  style={{
-                    ... (isDarkMode ? { background: 'linear-gradient(145deg, #1e293b, #334155)', color: '#1976d2' } : { background: '#f8f9fa', color: '#212529' }),
-                    border: '1px solid #e9ecef'
-                  }}
+      <section className="relative min-h-[85vh] flex items-center bg-gradient-to-br from-indigo-900 via-blue-900 to-slate-900 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 text-white overflow-hidden py-16 px-4">
+        {/* Subtle mesh background grid */}
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        
+        <div className="container mx-auto px-4 md:px-6 relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
+            
+            {/* Left Hero Column */}
+            <div className="lg:col-span-8 space-y-6 text-center lg:text-left">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-black leading-tight tracking-tight">
+                Transform Your <br />
+                <span className="text-amber-400 drop-shadow-md">Health Journey</span>
+              </h1>
+              <p className="text-base sm:text-lg md:text-xl text-slate-200/90 leading-relaxed max-w-2xl mx-auto lg:mx-0 text-justify">
+                Navigating a rare condition can feel like walking in the dark. Our AI-powered journal helps you document your symptoms, analyze patterns, and discover possible conditions before they become critical.
+              </p>
+              
+              <div className="pt-4 flex flex-wrap justify-center lg:justify-start gap-4">
+                <Link
+                  to={!isLogin ? "/register" : "/dashboard"}
+                  className="inline-flex items-center gap-2 px-8 py-3.5 rounded-full font-bold text-white bg-white/20 border border-white/30 backdrop-blur-md hover:bg-white/30 shadow-lg transition-all duration-300 transform hover:-translate-y-0.5"
                 >
-                  {/* <i className="fas fa-brain mb-4" style={{ fontSize: '5rem', color: '#1976d2' }}></i> */}
-                  <img src={SymptoScopeLogo} alt="SymptoScope Logo" className="bg-transparent" style={{ height: "90px",background:"transparent" ,fontSize: '5rem', color: '#1976d2' }} />
-                  <p className="mb-0 " style={{ color: '#495057', fontSize: '1.1rem' }}>
-                    AI Symptom Journal for Rare Conditions
-                  </p>
-                  <div className="mt-3">
-                    <small className="text-success">
-                      <i className="fas fa-arrow-up me-1"></i>
-                      Enpowering Health
-                    </small>
-                  </div>
+                  <i className="fas fa-rocket"></i>
+                  {!isLogin ? "Get Started" : "Go to Dashboard"}
+                  <i className="fas fa-arrow-right text-xs"></i>
+                </Link>
+              </div>
+            </div>
+
+            {/* Right Hero Column (Visual Showcase Logo Card) */}
+            <div className="lg:col-span-4 flex justify-center">
+              <div className="w-full max-w-[320px] p-8 rounded-3xl shadow-2xl glassmorphism border border-white/20 transform hover:scale-102 transition-transform duration-300 text-center">
+                <img 
+                  src="./SymptoScopeLogo.png" 
+                  alt="SymptoScope Logo" 
+                  className="h-28 mx-auto mb-6 bg-transparent hover:rotate-6 transition-transform duration-500" 
+                />
+                <p className="text-slate-200 dark:text-slate-300 font-medium text-lg">
+                  AI Symptom Journal for Rare Conditions
+                </p>
+                <div className="mt-4 inline-flex items-center gap-1.5 px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-semibold">
+                  <i className="fas fa-arrow-up"></i>
+                  Empowering Health
                 </div>
               </div>
-            </Col>
-          </Row>
-        </Container>
+            </div>
 
-        {/* Animated Medical Equipment Background */}
-        <div className="medical-equipment equipment-1">
-          <i className="fas fa-stethoscope" style={{ fontSize: '4rem' }}></i>
-        </div>
-        <div className="medical-equipment equipment-2">
-          <i className="fas fa-heartbeat" style={{ fontSize: '3.5rem' }}></i>
-        </div>
-        <div className="medical-equipment equipment-3">
-          <i className="fas fa-user-md" style={{ fontSize: '3rem' }}></i>
-        </div>
-        <div className="medical-equipment equipment-4">
-          <i className="fas fa-pills" style={{ fontSize: '2.5rem' }}></i>
-        </div>
-        <div className="medical-equipment equipment-5">
-          <i className="fas fa-syringe" style={{ fontSize: '3rem' }}></i>
-        </div>
-        <div className="medical-equipment equipment-6">
-          <i className="fas fa-microscope" style={{ fontSize: '3.5rem' }}></i>
+          </div>
         </div>
 
-        {/* Additional Medical Elements */}
-        <div className="medical-equipment" style={{ top: '10%', right: '5%', animationDelay: '6s' }}>
-          <i className="fas fa-dna" style={{ fontSize: '2.8rem' }}></i>
+        {/* Animated Floating Medical Equipment Background Items */}
+        <div className="medical-equipment absolute top-[15%] left-[5%] animate-float-1 text-sky-400/25">
+          <i className="fas fa-stethoscope text-5xl"></i>
         </div>
-        <div className="medical-equipment" style={{ bottom: '10%', left: '8%', animationDelay: '7s' }}>
-          <i className="fas fa-x-ray" style={{ fontSize: '3.2rem' }}></i>
+        <div className="medical-equipment absolute top-[25%] right-[8%] animate-float-2 text-indigo-400/25">
+          <i className="fas fa-heartbeat text-5xl"></i>
         </div>
-        <div className="medical-equipment" style={{ top: '55%', left: '12%', animationDelay: '8s' }}>
-          <i className="fas fa-thermometer" style={{ fontSize: '2.5rem' }}></i>
+        <div className="medical-equipment absolute bottom-[30%] left-[15%] animate-float-3 text-emerald-400/25">
+          <i className="fas fa-user-md text-4xl"></i>
+        </div>
+        <div className="medical-equipment absolute top-[45%] right-[25%] animate-float-4 text-rose-400/25">
+          <i className="fas fa-pills text-3xl"></i>
+        </div>
+        <div className="medical-equipment absolute bottom-[15%] right-[12%] animate-float-5 text-amber-400/25">
+          <i className="fas fa-syringe text-4xl"></i>
+        </div>
+        <div className="medical-equipment absolute top-[35%] left-[25%] animate-float-6 text-cyan-400/25">
+          <i className="fas fa-microscope text-5xl"></i>
+        </div>
+        <div className="medical-equipment absolute top-[10%] right-[5%] animate-float-3 text-indigo-300/20">
+          <i className="fas fa-dna text-4xl"></i>
+        </div>
+        <div className="medical-equipment absolute bottom-[10%] left-[8%] animate-float-5 text-purple-400/20">
+          <i className="fas fa-x-ray text-5xl"></i>
         </div>
       </section>
 
       {/* Features Section */}
-      <section className="py-5 bg-light">
-        <Container>
-          <Row className="justify-content-center mb-5">
-            <Col lg={8} className="text-center">
-              <Badge bg="primary" className="mb-3 px-3 py-2">PLATFORM FEATURES</Badge>
-              <h2 className="display-4 fw-bold mb-4">
-                Next-Generation Health Technology
-              </h2>
-              <p className="lead text-muted">
-                Cutting-edge AI algorithms combined with medical expertise to provide 
-                unprecedented insights into rare conditions
-              </p>
-            </Col>
-          </Row>
+      <section className="py-20 bg-slate-50 dark:bg-slate-900/50 transition-colors duration-300">
+        <div className="container mx-auto px-4 md:px-6">
           
-          <Row className="g-4">
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-sky-100 dark:bg-sky-950 text-sky-600 dark:text-sky-400 uppercase tracking-widest">
+              Platform Features
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
+              Next-Generation Health Technology
+            </h2>
+            <p className="text-slate-600 dark:text-slate-300 text-base md:text-lg">
+              Cutting-edge AI algorithms combined with medical expertise to provide unprecedented insights into rare conditions
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {features.map((feature, index) => (
-              <Col md={6} lg={4} key={index}>
-                <Card className="medical-card h-100 border-0">
-                  <Card.Body className="p-4">
-                    <div className="gradient-primary rounded-3 d-inline-flex p-3 mb-4">
-                      <i className={`${feature.icon} text-white`} style={{ fontSize: '1.5rem' }}></i>
-                    </div>
-                    <h4 className="fw-bold mb-3">{feature.title}</h4>
-                    <p className="text-muted mb-4">{feature.description}</p>
-                    <ul className="list-unstyled">
-                      {feature.benefits.map((benefit, idx) => (
-                        <li key={idx} className="mb-2">
-                          <i className="fas fa-check-circle text-success me-2"></i>
-                          <small>{benefit}</small>
-                        </li>
-                      ))}
-                    </ul>
-                  </Card.Body>
-                </Card>
-              </Col>
+              <div key={index} className="medical-card">
+                <div className="bg-gradient-primary w-12 h-12 rounded-xl flex items-center justify-center mb-6 shadow-lg shadow-medical-blue/20">
+                  <i className={`${feature.icon} text-white text-lg`}></i>
+                </div>
+                <h4 className="text-xl font-bold text-slate-800 dark:text-white mb-3">
+                  {feature.title}
+                </h4>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed mb-6">
+                  {feature.description}
+                </p>
+                <ul className="space-y-2.5 divide-y divide-slate-100 dark:divide-slate-800/50">
+                  {feature.benefits.map((benefit, idx) => (
+                    <li key={idx} className="flex items-center gap-2 text-sm pt-2 text-slate-600 dark:text-slate-300">
+                      <i className="fas fa-check-circle text-emerald-500"></i>
+                      <span>{benefit}</span>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </Row>
-        </Container>
+          </div>
+
+        </div>
       </section>
 
       {/* How It Works */}
-      <section className="py-5">
-        <Container>
-          <Row className="justify-content-center mb-5">
-            <Col lg={8} className="text-center">
-              <Badge bg="success" className="mb-3 px-3 py-2">HOW IT WORKS</Badge>
-              <h2 className="display-4 fw-bold mb-4">
-                Simple Steps to Better Health
-              </h2>
-              <p className="lead text-muted">
-                Get started with SymptomAI in just a few easy steps
-              </p>
-            </Col>
-          </Row>
+      <section className="py-20 bg-white dark:bg-slate-950 transition-colors duration-300">
+        <div className="container mx-auto px-4 md:px-6">
           
-          <Row className="g-5">
+          <div className="text-center max-w-3xl mx-auto mb-16 space-y-4">
+            <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-emerald-100 dark:bg-emerald-950 text-emerald-600 dark:text-emerald-400 uppercase tracking-widest">
+              How it works
+            </span>
+            <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 dark:text-white">
+              Simple Steps to Better Health
+            </h2>
+            <p className="text-slate-600 dark:text-slate-300 text-base md:text-lg">
+              Get started with SymptomAI in just a few easy steps
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
             {howItWorks.map((step, index) => (
-              <Col md={6} lg={3} key={index}>
-                <div className="text-center">
-                  <div className="position-relative mb-4">
-                    <div className="gradient-primary rounded-circle d-flex align-items-center justify-content-center mx-auto text-white fw-bold"
-                         style={{ width: '80px', height: '80px', fontSize: '1.5rem' }}>
-                      {step.step}
-                    </div>
-                    <div className="gradient-success rounded-3 d-inline-flex p-2 position-absolute top-0 end-0">
-                      <i className={`${step.icon} text-white`}></i>
-                    </div>
+              <div key={index} className="text-center group">
+                <div className="relative w-24 h-24 mx-auto mb-6 flex items-center justify-center">
+                  <div className="bg-gradient-primary w-20 h-20 rounded-full flex items-center justify-center text-white font-extrabold text-2xl shadow-xl shadow-medical-blue/20 group-hover:scale-105 transition-transform duration-300">
+                    {step.step}
                   </div>
-                  <h4 className="fw-bold mb-3">{step.title}</h4>
-                  <p className="text-muted">{step.description}</p>
+                  <div className="bg-gradient-success absolute -top-1.5 -right-1.5 w-9 h-9 rounded-xl flex items-center justify-center text-white shadow-md">
+                    <i className={step.icon}></i>
+                  </div>
                 </div>
-              </Col>
+                <h4 className="text-lg font-bold text-slate-800 dark:text-white mb-2">
+                  {step.title}
+                </h4>
+                <p className="text-slate-500 dark:text-slate-400 text-sm leading-relaxed max-w-xs mx-auto">
+                  {step.description}
+                </p>
+              </div>
             ))}
-          </Row>
-        </Container>
+          </div>
+
+        </div>
       </section>
 
-      {/* Testimonials */}
-      {/* <section className="py-5 bg-light">
-        <Container>
-          <Row className="justify-content-center mb-5">
-            <Col lg={8} className="text-center">
-              <Badge bg="info" className="mb-3 px-3 py-2">PATIENT STORIES</Badge>
-              <h2 className="display-4 fw-bold mb-4">
-                Real Results from Real Patients
-              </h2>
-              <p className="lead text-muted">
-                Hear from patients and doctors who are transforming healthcare with SymptomAI
-              </p>
-            </Col>
-          </Row>
-          
-          <Row className="justify-content-center">
-            <Col lg={10}>
-              <Carousel indicators={false} className="testimonial-carousel">
-                {testimonials.map((testimonial, index) => (
-                  <Carousel.Item key={index}>
-                    <Card className="medical-card border-0 mx-auto" style={{ maxWidth: '800px' }}>
-                      <Card.Body className="p-5 text-center">
-                        <img 
-                          src={testimonial.image} 
-                          alt={testimonial.name}
-                          className="rounded-circle mb-4"
-                          style={{ width: '80px', height: '80px' }}
-                        />
-                        <div className="mb-3">
-                          {[...Array(testimonial.rating)].map((_, i) => (
-                            <i key={i} className="fas fa-star text-warning"></i>
-                          ))}
-                        </div>
-                        <blockquote className="fs-5 mb-4 fst-italic">
-                          "{testimonial.quote}"
-                        </blockquote>
-                        <div className="fw-bold">{testimonial.name}</div>
-                        <div className="text-muted">
-                          {testimonial.condition || testimonial.role} • {testimonial.location}
-                        </div>
-                      </Card.Body>
-                    </Card>
-                  </Carousel.Item>
-                ))}
-              </Carousel>
-            </Col>
-          </Row>
-        </Container>
-      </section> */}
-
-      {/* Trust & Security */}
-      {/* <section className="py-5">
-        <Container>
-          <Row className="justify-content-center mb-5">
-            <Col lg={8} className="text-center">
-              <Badge bg="warning" className="mb-3 px-3 py-2">TRUST & SECURITY</Badge>
-              <h2 className="display-4 fw-bold mb-4">
-                Medical-Grade Security & Privacy
-              </h2>
-            </Col>
-          </Row>
-          
-          <Row className="g-4 text-center">
-            <Col md={3}>
-              <Card className="medical-card border-0 h-100">
-                <Card.Body className="p-4">
-                  <i className="fas fa-shield-alt text-success mb-3" style={{ fontSize: '3rem' }}></i>
-                  <h5 className="fw-bold">HIPAA Compliant</h5>
-                  <p className="text-muted small mb-0">Medical-grade privacy protection</p>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={3}>
-              <Card className="medical-card border-0 h-100">
-                <Card.Body className="p-4">
-                  <i className="fas fa-lock text-primary mb-3" style={{ fontSize: '3rem' }}></i>
-                  <h5 className="fw-bold">256-bit Encryption</h5>
-                  <p className="text-muted small mb-0">Bank-level data security</p>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={3}>
-              <Card className="medical-card border-0 h-100">
-                <Card.Body className="p-4">
-                  <i className="fas fa-certificate text-warning mb-3" style={{ fontSize: '3rem' }}></i>
-                  <h5 className="fw-bold">FDA Approved</h5>
-                  <p className="text-muted small mb-0">Breakthrough device designation</p>
-                </Card.Body>
-              </Card>
-            </Col>
-            <Col md={3}>
-              <Card className="medical-card border-0 h-100">
-                <Card.Body className="p-4">
-                  <i className="fas fa-award text-info mb-3" style={{ fontSize: '3rem' }}></i>
-                  <h5 className="fw-bold">SOC 2 Certified</h5>
-                  <p className="text-muted small mb-0">Industry-leading compliance</p>
-                </Card.Body>
-              </Card>
-            </Col>
-          </Row>
-        </Container>
-      </section> */}
-
       {/* CTA Section */}
-      <section className="py-5 bg-primary text-white">
-        <Container>
-          <Row className="justify-content-center text-center">
-            <Col lg={8}>
-              <Badge bg="warning" className="mb-4 px-3 py-2">GET STARTED TODAY</Badge>
-              <h2 className="display-3 fw-bold mb-4">
-                Ready to Transform Your Health Management?
-              </h2>
-              <p className="lead mb-5 opacity-90">
-                Navigating a rare condition can feel like walking in the dark. Our AI-powered journal helps you document your symptoms, analyze patterns, and discover possible conditions before they become critical.
-              </p>
-              
-              <div className="d-flex flex-column flex-md-row justify-content-center gap-3 mb-5">
-                <Link to="/register" className="text-decoration-none">
-                  <Button variant="warning" size="lg" className="px-5 py-3">
-                    <i className="fas fa-rocket me-2"></i>
-                    Get Started  <i className="fas fa-arrow-right "></i>
-                  </Button>
-                </Link>
-                {/* <Link to="/contact" className="text-decoration-none">
-                  <Button variant="outline-light" size="lg" className="px-5 py-3">
-                    <i className="fas fa-calendar me-2"></i>
-                    Schedule Demo
-                  </Button>
-                </Link> */}
-              </div>
-            </Col>
-          </Row>
-        </Container>
+      <section className="py-20 bg-gradient-primary text-white text-center px-4 relative overflow-hidden">
+        <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff05_1px,transparent_1px),linear-gradient(to_bottom,#ffffff05_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+        
+        <div className="container mx-auto px-4 md:px-6 relative z-10 max-w-3xl space-y-6">
+          <span className="inline-flex items-center px-4 py-1.5 rounded-full text-xs font-bold bg-amber-400 text-slate-900 uppercase tracking-widest">
+            Get Started Today
+          </span>
+          <h2 className="text-3xl md:text-5xl font-extrabold tracking-tight">
+            Ready to Transform Your Health Management?
+          </h2>
+          <p className="text-slate-100 text-base md:text-lg leading-relaxed opacity-90 max-w-2xl mx-auto">
+            Navigating a rare condition can feel like walking in the dark. Our AI-powered journal helps you document your symptoms, analyze patterns, and discover possible conditions before they become critical.
+          </p>
+          
+          <div className="pt-6 flex justify-center">
+            <Link to="/register">
+              <button className="bg-amber-400 hover:bg-amber-500 text-slate-950 font-extrabold px-8 py-3.5 rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 transform hover:-translate-y-0.5 cursor-pointer">
+                <i className="fas fa-rocket mr-2"></i>
+                Get Started
+                <i className="fas fa-arrow-right ml-2 text-xs"></i>
+              </button>
+            </Link>
+          </div>
+        </div>
       </section>
 
       {/* Footer */}
-      <footer className="footer-medical py-5">
-        <Container>
-          <Row className="g-4">
-            <Col lg={4}>
-              <div className="d-flex align-items-center mb-4">
-                <div className="rounded-3 p-2">
-                  <img src={SymptoScopeLogo} alt="SymptoScope Logo" style={{ width: '65px'}} />
-                </div>
-                <div>
-                  <div className="fw-bold text-primary fs-4">SymptoScope</div>
-                </div>
-              </div>
-              <p className="text-white-50 mb-4">
-                Empowering patients with rare conditions through AI-driven insights 
-                and personalized health tracking.
-              </p>
-              <div className="d-flex gap-3">
-                <Button variant="outline-light" size="sm" className="rounded-circle">
-                  <i className="fab fa-twitter"></i>
-                </Button>
-                <Button variant="outline-light" size="sm" className="rounded-circle">
-                  <i className="fab fa-linkedin"></i>
-                </Button>
-                <Button variant="outline-light" size="sm" className="rounded-circle">
-                  <i className="fab fa-facebook"></i>
-                </Button>
-              </div>
-            </Col>
-            
-            <Col md={6} lg={2}>
-              <h5 className="text-white fw-bold mb-3">Product</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2"><Link to="/features" className="text-white-50 text-decoration-none">Features</Link></li>
-                <li className="mb-2"><Link to="/security" className="text-white-50 text-decoration-none">Security</Link></li>
-                <li className="mb-2"><Link to="/mobile" className="text-white-50 text-decoration-none">Mobile Apps</Link></li>
-              </ul>
-            </Col>
-            
-            <Col md={6} lg={2}>
-              <h5 className="text-white fw-bold mb-3">Company</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2"><Link to="/about" className="text-white-50 text-decoration-none">About</Link></li>
-               
-                <li className="mb-2"><Link to="/press" className="text-white-50 text-decoration-none">Press</Link></li>
-                <li className="mb-2"><Link to="/contact" className="text-white-50 text-decoration-none">Contact</Link></li>
-              </ul>
-            </Col>
-            
-            <Col md={6} lg={2}>
-              <h5 className="text-white fw-bold mb-3">Legal</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2"><Link to="/privacy" className="text-white-50 text-decoration-none">Privacy</Link></li>
-                <li className="mb-2"><Link to="/terms" className="text-white-50 text-decoration-none">Terms</Link></li>
-                <li className="mb-2"><Link to="/cookies" className="text-white-50 text-decoration-none">Cookies</Link></li>
-              </ul>
-            </Col>
-          </Row>
+      <footer className="footer-medical py-16 bg-slate-950 text-white transition-colors duration-300">
+        <div className="container mx-auto px-4 md:px-6">
           
-          <hr className="my-4 text-white-50" />
-          
-          <Row className="align-items-center">
-            <Col md={6}>
-              <p className="text-white-50 mb-0">
-                © 2024 SymptomAI. All rights reserved.
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
+            
+            {/* Branding Column */}
+            <div className="lg:col-span-2 space-y-5">
+              <div className="flex items-center gap-3">
+                <img 
+                  src="./SymptoScopeLogo.png" 
+                  alt="SymptoScope Logo" 
+                  className="w-12 h-12 object-contain" 
+                />
+                <span className="font-extrabold text-xl text-gradient-primary">SymptoScope</span>
+              </div>
+              <p className="text-slate-400 text-sm leading-relaxed max-w-sm">
+                Empowering patients with rare conditions through AI-driven insights and personalized health tracking.
               </p>
-            </Col>
-            {/* <Col md={6} className="text-md-end">
-              <p className="text-white-50 mb-0">
-                <i className="fas fa-shield-alt me-1"></i>
-                HIPAA Compliant • FDA Approved • SOC 2 Certified
-              </p>
-            </Col> */}
-          </Row>
-        </Container>
+              <div className="flex gap-3 pt-2">
+                {["fa-twitter", "fa-linkedin", "fa-facebook"].map((social, i) => (
+                  <button 
+                    key={i} 
+                    className="w-9 h-9 rounded-full border border-slate-800 hover:border-sky-500 hover:bg-sky-500/10 text-slate-400 hover:text-sky-400 flex items-center justify-center transition-all duration-300 cursor-pointer"
+                  >
+                    <i className={`fab ${social}`}></i>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Product Column */}
+            <div className="space-y-4">
+              <h5 className="font-extrabold text-sm uppercase tracking-wider text-slate-300">Product</h5>
+              <ul className="space-y-2.5 text-sm text-slate-400">
+                {["Features", "Security", "Mobile Apps"].map((item, i) => (
+                  <li key={i}>
+                    <Link to={`/${item.toLowerCase().replace(" ", "-")}`} className="hover:text-sky-400 transition-colors">
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Company Column */}
+            <div className="space-y-4">
+              <h5 className="font-extrabold text-sm uppercase tracking-wider text-slate-300">Company</h5>
+              <ul className="space-y-2.5 text-sm text-slate-400">
+                {["About", "Press", "Contact"].map((item, i) => (
+                  <li key={i}>
+                    <Link to={`/${item.toLowerCase()}`} className="hover:text-sky-400 transition-colors">
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+            {/* Legal Column */}
+            <div className="space-y-4">
+              <h5 className="font-extrabold text-sm uppercase tracking-wider text-slate-300">Legal</h5>
+              <ul className="space-y-2.5 text-sm text-slate-400">
+                {["Privacy", "Terms", "Cookies"].map((item, i) => (
+                  <li key={i}>
+                    <Link to={`/${item.toLowerCase()}`} className="hover:text-sky-400 transition-colors">
+                      {item}
+                    </Link>
+                  </li>
+                ))}
+              </ul>
+            </div>
+
+          </div>
+
+          <hr className="border-slate-900 my-10" />
+
+          <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+            <p>© 2026 SymptoScope. All rights reserved.</p>
+            <p className="flex items-center gap-1.5">
+              <i className="fas fa-shield-alt text-emerald-500"></i>
+              HIPAA Compliant • SOC 2 Secure
+            </p>
+          </div>
+
+        </div>
       </footer>
+
     </div>
   );
 }
